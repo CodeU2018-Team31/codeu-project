@@ -22,7 +22,7 @@
 <body>
 
   <nav>
-    <a id="navTitle" href="/">CodeU Chat App</a>
+    <a id="navTitle" href="/">&lt;EastCode/&gt;</a>
     <a href="/conversations">Conversations</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
       <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
@@ -57,13 +57,13 @@
           internationalization.</li>
       </ul>
 
-      <p>
-        This is your code now. Get familiar with it and get comfortable
-        working with your team to plan and make changes. Start by updating the
-        homepage and this about page to tell your users more about your team.
-        This page should also be used to describe the features and improvements
-        you've added.
-      </p>
+      <h3>Team Members</h3>
+      <ul>
+        <li>Blessing Adogame</li>
+        <li>Ivanna Pena</li>
+        <li>Moustafa Elsisy</li>
+        <li>Xavier Ray</li>
+      </ul>
     </div>
   </div>
 </body>
