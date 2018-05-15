@@ -40,6 +40,7 @@ public class Conversation {
     this.owner = owner;
     this.creation = creation;
     this.title = title;
+    System.out.println("test");
   }
 
   /** Returns the ID of this Conversation. */
