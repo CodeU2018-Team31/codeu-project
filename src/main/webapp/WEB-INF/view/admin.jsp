@@ -14,26 +14,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  --%>
-
- <!DOCTYPE html>
- <html>
- <head>
-   <title>Administration</title>
-   <link rel="stylesheet" href="/css/main.css">
- </head>
- <body>
-  <nav>
-    <a id="navTitle" href="/">CodeU Chat App</a>
-    <a href="/admin">Administration</a>
-    <a href="/conversations">Conversations</a>
-    <a href="/about.jsp">About</a>
-  </nav>
-   <div id="container">
-
-     <h1>Administration</h1>
-     <h2>Site Statistics</h2>
-       <p>Current Site Stats</p>
-
-   </div>
- </body>
- </html>
+<t:base>
+    <jsp:attribute name="bodyContent">
+         <h1>Administration</h1>
+         <h2>Site Statistics</h2>
+         <p>Current Site Stats</p>
+    </jsp:attribute>
+</t:base>
