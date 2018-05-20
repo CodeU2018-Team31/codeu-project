@@ -1,4 +1,7 @@
 <%@tag description="Main base template for chat app"%>
+<%@ attribute name="bodyContent" required="true" rtexprvalue="true" %>
+<%@ attribute name="headContent" rtexprvalue="true" %>
+<%@ attribute name="title" rtexprvalue="true" %>
 <%--
   Copyright 2017 Google Inc.
 
@@ -17,8 +20,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>EastCode Chat</title>
+  <title><%= title != null ? title : "EastCode Chat" %></title>
   <link rel="stylesheet" href="/css/main.css">
+  ${headContent}
 </head>
 <body>
 
@@ -37,7 +41,7 @@
   <div id="container">
     <div
       style="width:75%; margin-left:auto; margin-right:auto; margin-top: 50px;">
-        <jsp:doBody/>
+        ${bodyContent}
     </div>
   </div>
 </body>

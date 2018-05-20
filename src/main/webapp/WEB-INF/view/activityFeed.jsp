@@ -14,8 +14,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 --%>
-    <t:base>
-      <h1>Activity Feed</h1>
-  </t:base>
-</body>
-</html>
+<t:base>
+    <jsp:attribute name="bodyContent">
+        <h1>Activity Feed</h1>
+    </jsp:attribute>
+</t:base>
