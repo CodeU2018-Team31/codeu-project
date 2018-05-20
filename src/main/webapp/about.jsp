@@ -1,3 +1,4 @@
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%--
   Copyright 2017 Google Inc.
 
@@ -13,29 +14,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 --%>
-<!DOCTYPE html>
-<html>
-<head>
-  <title>CodeU Chat App</title>
-  <link rel="stylesheet" href="/css/main.css">
-</head>
-<body>
-
-  <nav>
-    <a id="navTitle" href="/">&lt;EastCode/&gt;</a>
-    <a href="/conversations">Conversations</a>
-    <% if(request.getSession().getAttribute("user") != null){ %>
-      <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
-    <% } else{ %>
-      <a href="/login">Login</a>
-    <% } %>
-    <a href="/about.jsp">About</a>
-  </nav>
-
-  <div id="container">
-    <div
-      style="width:75%; margin-left:auto; margin-right:auto; margin-top: 50px;">
-
+<t:base>
+    <jsp:attribute name="bodyContent">
       <h1>About the CodeU Chat App</h1>
       <p>
         This is an example chat application designed to be a starting point
@@ -64,7 +44,6 @@
         <li>Moustafa Elsisy</li>
         <li>Xavier Ray</li>
       </ul>
-    </div>
-  </div>
-</body>
-</html>
+    </jsp:attribute>
+</t:base>
+
