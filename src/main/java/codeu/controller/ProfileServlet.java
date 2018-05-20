@@ -27,8 +27,8 @@ public class ProfileServlet extends HttpServlet {
         super.init();
     }
     /**
-     * This function fires when a user navigates to the Activity Feed page.
-     * It simply forwards the request to the corresponding jsp view
+     * This function starts when a user navigates to a profile page.
+     * It simply forwards the request  to the corresponding jsp view
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)

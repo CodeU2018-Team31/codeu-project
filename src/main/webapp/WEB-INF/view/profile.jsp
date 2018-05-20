@@ -14,8 +14,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 --%>
-    <t:base>
-
-      <h1> Hello! ${username} </h1>
-
+<t:base>
+    <jsp:attribute name="bodyContent">
+        <h1> Hello! ${username} </h1>
+    </jsp:attribute>
   </t:base>
