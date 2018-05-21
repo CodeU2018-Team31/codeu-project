@@ -70,7 +70,7 @@ public class AdminServlet extends HttpServlet {
 //
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
+        throws IOException, ServletException {
         String username = (String) request.getSession().getAttribute("user");
 //        User user = userStore.getUser(username);
         if (!username.matches("admin")) {
@@ -86,5 +86,3 @@ public class AdminServlet extends HttpServlet {
 //        request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
 //        }
 //    }
-
-
