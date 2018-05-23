@@ -16,6 +16,9 @@ package codeu.model.data;
 
 import java.time.Instant;
 import java.util.UUID;
+import com.vladsch.flexmark.ast.Node;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
 
 /** Class representing a message. Messages are sent by a User in a Conversation. */
 public class Message {
@@ -67,4 +70,10 @@ public class Message {
   public Instant getCreationTime() {
     return creation;
   }
+
+  public String getMarkdownContent() {return markdown(content);}
+  private String markdown(String s) {Parser parser = Parser.builder().build();
+    Node document = parser.parse(s);
+    HtmlRenderer renderer = HtmlRenderer.builder().build(); return renderer.render(document);}
+
 }
