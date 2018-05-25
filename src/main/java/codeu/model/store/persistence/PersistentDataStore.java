@@ -19,7 +19,12 @@ import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentDataStoreException;
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -150,7 +155,7 @@ public class PersistentDataStore {
   }
 
   /**
-   * Loads Activity objects from the Datastore service that were created before the provided datetime,
+   * Loads {@link Activity} objects from the Datastore service that were created before the provided datetime,
    * up to the provided limit of number of entries and sorted in descending order by creation time.
    *
    * @param startDatetime The retrieved activities would have been created exclusively before the startDatetime
@@ -216,7 +221,7 @@ public class PersistentDataStore {
   }
 
   /**
-   * Write an Activity object to the Datastore service.
+   * Write an {@link Activity} object to the Datastore service.
    */
   public void writeThrough(Activity activity) {
     Entity activityEntity = new Entity("chat-activities", activity.getId().toString());
