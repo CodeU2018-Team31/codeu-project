@@ -1,5 +1,6 @@
 package codeu.model.store.persistence;
 
+import codeu.enumeration.ActivityTypeEnum;
 import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
@@ -153,14 +154,14 @@ public class PersistentDataStoreTest {
         UUID idOne = UUID.fromString("10000000-2222-3333-4444-555555555555");
         String descriptionOne = "User1 has joined!";
         Instant datetimeOne = Instant.ofEpochMilli(1);
-        int typeOne = 0;
+        ActivityTypeEnum typeOne = ActivityTypeEnum.USER_ADDED;
         Activity activityOne =
                 new Activity(idOne, descriptionOne, datetimeOne, typeOne);
 
         UUID idTwo = UUID.fromString("10000000-2222-3333-4444-555555555556");
         String descriptionTwo = "User2 has joined!";
         Instant datetimeTwo = Instant.ofEpochMilli(2);
-        int typeTwo = 0;
+        ActivityTypeEnum typeTwo = ActivityTypeEnum.USER_ADDED;
         Activity activityTwo =
                 new Activity(idTwo, descriptionTwo, datetimeTwo, typeTwo);
 

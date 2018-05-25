@@ -14,6 +14,7 @@
 
 package codeu.model.store.persistence;
 
+import codeu.enumeration.ActivityTypeEnum;
 import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
@@ -177,7 +178,8 @@ public class PersistentDataStore {
         UUID id = UUID.fromString((String) entity.getProperty("id"));
         String description = (String) entity.getProperty("description");
         Instant datetime = Instant.parse((String) entity.getProperty("datetime"));
-        int type = Math.toIntExact((long) entity.getProperty("type"));
+        int typeIndex = Math.toIntExact((long) entity.getProperty("type")); //convert type index from long to int
+        ActivityTypeEnum type = ActivityTypeEnum.values()[typeIndex]; //convert type index into the enum value
 
         Activity activity = new Activity(id, description, datetime, type);
         activities.add(activity);
@@ -228,7 +230,7 @@ public class PersistentDataStore {
     activityEntity.setProperty("id", activity.getId().toString());
     activityEntity.setProperty("description", activity.getDescription());
     activityEntity.setProperty("datetime", activity.getDatetime().toString());
-    activityEntity.setProperty("type", activity.getType());
+    activityEntity.setProperty("type", activity.getType().ordinal()); //store the index of the enum value
     datastore.put(activityEntity);
   }
 }

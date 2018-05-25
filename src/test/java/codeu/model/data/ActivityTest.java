@@ -14,6 +14,7 @@
 
 package codeu.model.data;
 
+import codeu.enumeration.ActivityTypeEnum;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,7 +28,7 @@ public class ActivityTest {
         UUID id = UUID.randomUUID();
         String description = "User1 has just added a message to the Conversation `Hello World!`";
         Instant creation = Instant.now();
-        int type = 0;
+        ActivityTypeEnum type = ActivityTypeEnum.MESSAGE_ADDED;
 
         Activity activity = new Activity(id, description, creation, type);
 

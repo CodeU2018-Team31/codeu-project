@@ -14,6 +14,8 @@
 
 package codeu.model.data;
 
+import codeu.enumeration.ActivityTypeEnum;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -24,7 +26,7 @@ public class Activity {
     private final UUID id;
     private final String description;
     private final Instant datetime;
-    private final int type;
+    private final ActivityTypeEnum type;
 
     /**
      * @param id          The unique id identifying the activity entry
@@ -32,7 +34,7 @@ public class Activity {
      * @param datetime    The instant at which the activity was created
      * @param type        The type of the activity, which identifies the kind of action that occured
      */
-    public Activity(UUID id, String description, Instant datetime, int type) {
+    public Activity(UUID id, String description, Instant datetime, ActivityTypeEnum type) {
         this.id = id;
         this.description = description;
         this.datetime = datetime;
@@ -52,7 +54,7 @@ public class Activity {
         return datetime;
     }
 
-    public int getType() {
+    public ActivityTypeEnum getType() {
         return type;
     }
 }
