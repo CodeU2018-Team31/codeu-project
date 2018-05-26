@@ -1,5 +1,6 @@
 package codeu.model.store.persistence;
 
+import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
@@ -146,4 +147,49 @@ public class PersistentDataStoreTest {
     Assert.assertEquals(contentTwo, resultMessageTwo.getContent());
     Assert.assertEquals(creationTwo, resultMessageTwo.getCreationTime());
   }
+
+    @Test
+    public void testSaveAndLoadActivities() throws PersistentDataStoreException {
+        UUID idOne = UUID.fromString("10000000-2222-3333-4444-555555555555");
+        String descriptionOne = "User1 has joined!";
+        Instant datetimeOne = Instant.ofEpochMilli(1);
+        int typeOne = 0;
+        Activity activityOne =
+                new Activity(idOne, descriptionOne, datetimeOne, typeOne);
+
+        UUID idTwo = UUID.fromString("10000000-2222-3333-4444-555555555556");
+        String descriptionTwo = "User2 has joined!";
+        Instant datetimeTwo = Instant.ofEpochMilli(2);
+        int typeTwo = 0;
+        Activity activityTwo =
+                new Activity(idTwo, descriptionTwo, datetimeTwo, typeTwo);
+
+        // save
+        persistentDataStore.writeThrough(activityOne);
+        persistentDataStore.writeThrough(activityTwo);
+
+        // load since ofEpochMilli(3) excluded
+        List<Activity> expectTwoResults = persistentDataStore.loadActivitiesBeforeDatetime(Instant.ofEpochMilli(3), 10);
+        // load since ofEpochMilli(2) excluded
+        List<Activity> expectOneResult = persistentDataStore.loadActivitiesBeforeDatetime(Instant.ofEpochMilli(2), 10);
+        // load since ofEpochMilli(3) excluded, and limit to 0 results
+        List<Activity> expectNoResultsByLimit = persistentDataStore.loadActivitiesBeforeDatetime(Instant.ofEpochMilli(3), 0);
+        // load since ofEpochMilli(1) excluded
+        List<Activity> expectNoResultsByInstant = persistentDataStore.loadActivitiesBeforeDatetime(Instant.ofEpochMilli(1), 10);
+
+        Assert.assertEquals(2, expectTwoResults.size());
+        Assert.assertEquals(1, expectOneResult.size());
+        Assert.assertEquals(0, expectNoResultsByLimit.size());
+        Assert.assertEquals(0, expectNoResultsByInstant.size());
+
+        //Ensure correct sorting, with newer activity first in the list
+        Assert.assertEquals(activityTwo.getId().toString(), expectTwoResults.get(0).getId().toString());
+        Assert.assertEquals(activityOne.getId().toString(), expectTwoResults.get(1).getId().toString());
+
+        //Ensure correct setting of properties
+        Activity retrievedActivityOne = expectTwoResults.get(1);
+        Assert.assertEquals(activityOne.getDescription(), retrievedActivityOne.getDescription());
+        Assert.assertEquals(activityOne.getDatetime(), retrievedActivityOne.getDatetime());
+        Assert.assertEquals(activityOne.getType(), retrievedActivityOne.getType());
+    }
 }
