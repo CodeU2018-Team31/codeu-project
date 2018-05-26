@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import codeu.enumeration.ActivityTypeEnum;
+import codeu.model.data.Activity;
+import codeu.model.store.basic.ActivityStore;
 import org.mindrot.jbcrypt.BCrypt;
 
 import codeu.model.data.User;
@@ -19,6 +22,11 @@ public class RegisterServlet extends HttpServlet {
   /** Store class that gives access to Users. */
   private UserStore userStore;
 
+    /**
+     * Store class that gives access to Activites.
+     */
+    private ActivityStore activityStore;
+
   /**
    * Set up state for handling registration-related requests. This method is only called when
    * running in a server, not when running in a test.
@@ -27,6 +35,7 @@ public class RegisterServlet extends HttpServlet {
   public void init() throws ServletException {
     super.init();
     setUserStore(UserStore.getInstance());
+      setActivityStore(ActivityStore.getInstance());
   }
 
   /**
@@ -36,6 +45,15 @@ public class RegisterServlet extends HttpServlet {
   void setUserStore(UserStore userStore) {
     this.userStore = userStore;
   }
+
+    /**
+     * Sets the {@link ActivityStore} used by this servlet. This function provides a common setup method for use
+     * by the test framework or the servlet's init() function.
+     */
+    void setActivityStore(ActivityStore activityStore) {
+        this.activityStore = activityStore;
+    }
+
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -66,6 +84,11 @@ public class RegisterServlet extends HttpServlet {
 
     User user = new User(UUID.randomUUID(), username, hashedPassword, Instant.now());
     userStore.addUser(user);
+
+      //Log Activity for user creation
+      String activityDescription = String.format("%s joined!", username);
+      Activity activity = new Activity(UUID.randomUUID(), activityDescription, Instant.now(), ActivityTypeEnum.USER_ADDED);
+      activityStore.addActivity(activity);
 
     response.sendRedirect("/login");
   }
