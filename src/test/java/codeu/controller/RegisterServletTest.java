@@ -113,6 +113,5 @@ public class RegisterServletTest {
         Mockito.verify(mockActivityStore).addActivity(activityArgumentCaptor.capture());
         Assert.assertEquals("test username joined!", activityArgumentCaptor.getValue().getDescription());
         Assert.assertEquals(ActivityTypeEnum.USER_ADDED, activityArgumentCaptor.getValue().getType());
-        Mockito.verify(mockResponse).sendRedirect("/login");
     }
 }
