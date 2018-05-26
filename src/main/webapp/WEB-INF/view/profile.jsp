@@ -16,6 +16,6 @@
 --%>
 <t:base>
     <jsp:attribute name="bodyContent">
-        <h1> Hello! ${username} </h1>
+        <h1> Hello <%= request.getParameter("username") %>! </h1>
     </jsp:attribute>
   </t:base>
