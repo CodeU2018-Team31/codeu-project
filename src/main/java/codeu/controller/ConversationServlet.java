@@ -14,8 +14,11 @@
 
 package codeu.controller;
 
+import codeu.enumeration.ActivityTypeEnum;
+import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.User;
+import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.UserStore;
 import java.io.IOException;
@@ -36,6 +39,11 @@ public class ConversationServlet extends HttpServlet {
   /** Store class that gives access to Conversations. */
   private ConversationStore conversationStore;
 
+    /**
+     * Store class that gives access to Activites.
+     */
+    private ActivityStore activityStore;
+
   /**
    * Set up state for handling conversation-related requests. This method is only called when
    * running in a server, not when running in a test.
@@ -44,6 +52,7 @@ public class ConversationServlet extends HttpServlet {
   public void init() throws ServletException {
     super.init();
     setUserStore(UserStore.getInstance());
+      setActivityStore(ActivityStore.getInstance());
     setConversationStore(ConversationStore.getInstance());
   }
 
@@ -60,8 +69,16 @@ public class ConversationServlet extends HttpServlet {
    * for use by the test framework or the servlet's init() function.
    */
   void setConversationStore(ConversationStore conversationStore) {
-    this.conversationStore = conversationStore;
+      this.conversationStore = conversationStore;
   }
+
+    /**
+     * Sets the {@link ActivityStore} used by this servlet. This function provides a common setup method
+     * for use by the test framework or the servlet's init() function.
+     */
+    void setActivityStore(ActivityStore activityStore) {
+        this.activityStore = activityStore;
+    }
 
   /**
    * This function fires when a user navigates to the conversations page. It gets all of the
@@ -117,6 +134,12 @@ public class ConversationServlet extends HttpServlet {
         new Conversation(UUID.randomUUID(), user.getId(), conversationTitle, Instant.now());
 
     conversationStore.addConversation(conversation);
+
+      //Log Activity for conversation creation
+      String activityDescription = String.format("%s created a new conversation: %s", username, conversationTitle);
+      Activity activity = new Activity(UUID.randomUUID(), activityDescription, Instant.now(), ActivityTypeEnum.CONVERSATION_ADDED);
+      activityStore.addActivity(activity);
+
     response.sendRedirect("/chat/" + conversationTitle);
   }
 }
