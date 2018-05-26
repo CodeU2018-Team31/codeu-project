@@ -14,8 +14,23 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 --%>
+<%@ page import="codeu.model.data.Activity" %>
+<%@ page import="java.util.List" %>
+<%
+List<Activity> activities = (List<Activity>) request.getAttribute("activities");
+String error = (String) request.getAttribute("error");
+%>
 <t:base>
     <jsp:attribute name="bodyContent">
         <h1>Activity Feed</h1>
+        <% if(error != null) { %>
+            <p><%= request.getAttribute("error") %></p>
+        <% } else { %>
+            <ul>
+                <% for(Activity activity: activities){ %>
+                    <li><%= activity.getDescription() %></li>
+                <% } %>
+            </ul>
+        <% } %>
     </jsp:attribute>
 </t:base>
