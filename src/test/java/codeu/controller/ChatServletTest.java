@@ -252,7 +252,5 @@ public class ChatServletTest {
                 "test_username sent a message to test_conversation: Test message.",
                 activityArgumentCaptor.getValue().getDescription());
         Assert.assertEquals(ActivityTypeEnum.MESSAGE_ADDED, activityArgumentCaptor.getValue().getType());
-
-        Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
     }
 }
