@@ -38,7 +38,7 @@ public class ActivityStore {
     }
 
     /**
-     * Loads Activity objects from the Datastore service that were created before the provided datetime
+     * Loads {@link Activity} objects from the Datastore service that were created before the provided datetime
      * and up to the provided limit of number of entries.
      *
      * @param startDatetime The retrieved activities would have been created exclusively before the startDatetime
