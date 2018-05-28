@@ -1,5 +1,6 @@
 package codeu.model.store.persistence;
 
+import codeu.enumeration.ActivityTypeEnum;
 import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
@@ -86,7 +87,7 @@ public class PersistentStorageAgentTest {
   public void testWriteThroughActivity() {
     Activity activity =
             new Activity(
-                    UUID.randomUUID(), "User joined!", Instant.now(), 0);
+                    UUID.randomUUID(), "User joined!", Instant.now(), ActivityTypeEnum.USER_ADDED);
     persistentStorageAgent.writeThrough(activity);
     Mockito.verify(mockPersistentDataStore).writeThrough(activity);
   }
