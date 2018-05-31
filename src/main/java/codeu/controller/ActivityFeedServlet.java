@@ -14,26 +14,55 @@
 
 package codeu.controller;
 
+import codeu.model.data.Activity;
+import codeu.model.store.basic.ActivityStore;
+import codeu.model.store.persistence.PersistentDataStoreException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActivityFeedServlet extends HttpServlet {
 
+    private ActivityStore activityStore;
+
   @Override
   public void init() throws ServletException {
-    super.init();
+      super.init();
+      setActivityStore(ActivityStore.getInstance());
   }
+
+    /**
+     * Sets the {@link ActivityStore} used by this servlet. This function provides a common setup method
+     * for use by the test framework or the servlet's init() function.
+     */
+    void setActivityStore(ActivityStore activityStore) {
+        this.activityStore = activityStore;
+    }
 
   /**
    * This function fires when a user navigates to the Activity Feed page.
-   * It simply forwards the request to the corresponding jsp view
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
+      List<Activity> activities = new ArrayList<>();
+
+      //Try to load the list of activities. If we fail to do so, we will return a meaningful error
+      //message in the page to the user
+      try {
+          activities = activityStore.getActivitiesBeforeDatetime(Instant.now(), Integer.MAX_VALUE);
+      } catch (PersistentDataStoreException exception) {
+          System.out.println("ActivityFeedServlet:doGet - Could not load activities: " + exception.getMessage());
+          request.setAttribute("error", "Could not load activities! Please try again later.");
+      }
+
+      request.setAttribute("activities", activities);
     request.getRequestDispatcher("/WEB-INF/view/activityFeed.jsp").forward(request, response);
   }
 }
