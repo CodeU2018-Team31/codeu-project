@@ -39,10 +39,10 @@ public class PersistentDataStoreTest {
   @Test
   public void testSaveAndLoadUsers() throws PersistentDataStoreException {
     UUID idOne = UUID.fromString("10000000-2222-3333-4444-555555555555");
-    String nameOne = "test_username_one";
-    String passwordHashOne = "$2a$10$BNte6sC.qoL4AVjO3Rk8ouY6uFaMnsW8B9NjtHWaDNe8GlQRPRT1S";
+    String nameOne = "admin";
+    String passwordHashOne = "eastcode";
     Instant creationOne = Instant.ofEpochMilli(1000);
-    Boolean isAdminOne = false;
+    Boolean isAdminOne = true;
     User inputUserOne = new User(idOne, nameOne, passwordHashOne, creationOne, isAdminOne);
 
     UUID idTwo = UUID.fromString("10000001-2222-3333-4444-555555555555");
@@ -65,12 +65,14 @@ public class PersistentDataStoreTest {
     Assert.assertEquals(nameOne, resultUserOne.getName());
     Assert.assertEquals(passwordHashOne, resultUserOne.getPasswordHash());
     Assert.assertEquals(creationOne, resultUserOne.getCreationTime());
+    Assert.assertEquals(isAdminOne, resultUserOne.getAdmin());
 
     User resultUserTwo = resultUsers.get(1);
     Assert.assertEquals(idTwo, resultUserTwo.getId());
     Assert.assertEquals(nameTwo, resultUserTwo.getName());
     Assert.assertEquals(passwordHashTwo, resultUserTwo.getPasswordHash());
     Assert.assertEquals(creationTwo, resultUserTwo.getCreationTime());
+    Assert.assertEquals(isAdminTwo, resultUserTwo.getAdmin());
   }
 
   @Test
