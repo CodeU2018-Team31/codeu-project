@@ -78,10 +78,30 @@ public class RegisterServletTest {
     Assert.assertThat(
         userArgumentCaptor.getValue().getPasswordHash(), CoreMatchers.containsString("$2a$10$"));
     Assert.assertEquals(60, userArgumentCaptor.getValue().getPasswordHash().length());
+    Assert.assertEquals(false, userArgumentCaptor.getValue().getAdmin());
 
     Mockito.verify(mockResponse).sendRedirect("/login");
   }
 
+  @Test
+  public void testDoPost_NewAdmin() throws IOException, ServletException {
+    Mockito.when(mockRequest.getParameter("username")).thenReturn("admin");
+    Mockito.when(mockRequest.getParameter("password")).thenReturn("eastcode");
+
+    UserStore mockUserStore = Mockito.mock(UserStore.class);
+    Mockito.when(mockUserStore.isUserRegistered("admin")).thenReturn(false);
+    registerServlet.setUserStore(mockUserStore);
+
+    registerServlet.doPost(mockRequest, mockResponse);
+
+    ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
+
+    Mockito.verify(mockUserStore).addUser(userArgumentCaptor.capture());
+    Assert.assertEquals("admin", userArgumentCaptor.getValue().getName());
+    Assert.assertEquals(true, userArgumentCaptor.getValue().getAdmin());
+
+    Mockito.verify(mockResponse).sendRedirect("/login");
+  }
   @Test
   public void testDoPost_ExistingUser() throws IOException, ServletException {
     Mockito.when(mockRequest.getParameter("username")).thenReturn("test username");

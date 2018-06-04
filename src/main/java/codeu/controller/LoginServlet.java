@@ -84,6 +84,11 @@ public class LoginServlet extends HttpServlet {
     }
 
     request.getSession().setAttribute("user", username);
+
+    if (username.matches("admin") && password.matches("eastcode")) {
+      response.sendRedirect("/admin");
+      return;
+    }
     response.sendRedirect("/conversations");
   }
 }

@@ -30,6 +30,7 @@
     <a id="navTitle" href="/">&lt;EastCode/&gt;</a>
     <a href="/conversations">Conversations</a>
     <a href="/activity">Activity Feed</a>
+    <a href="/admin">Administration</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
       <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
     <% } else{ %>
