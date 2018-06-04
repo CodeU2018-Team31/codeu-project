@@ -7,6 +7,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import codeu.enumeration.ActivityTypeEnum;
+import codeu.model.data.Activity;
+import codeu.model.store.basic.ActivityStore;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,6 +26,7 @@ public class RegisterServletTest {
   private HttpServletRequest mockRequest;
   private HttpServletResponse mockResponse;
   private RequestDispatcher mockRequestDispatcher;
+    private ActivityStore mockActivityStore;
 
   @Before
   public void setup() {
@@ -32,6 +36,9 @@ public class RegisterServletTest {
     mockRequestDispatcher = Mockito.mock(RequestDispatcher.class);
     Mockito.when(mockRequest.getRequestDispatcher("/WEB-INF/view/register.jsp"))
         .thenReturn(mockRequestDispatcher);
+
+      mockActivityStore = Mockito.mock(ActivityStore.class);
+      registerServlet.setActivityStore(mockActivityStore);
   }
 
   @Test
@@ -40,6 +47,7 @@ public class RegisterServletTest {
 
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }
+
 
   @Test
   public void testDoPost_BadUsername() throws IOException, ServletException {
@@ -108,4 +116,22 @@ public class RegisterServletTest {
     Mockito.verify(mockRequest).setAttribute("error", "That username is already taken.");
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }
+
+    @Test
+    public void testDoPost_AddsActivity() throws IOException, ServletException {
+        Mockito.when(mockRequest.getParameter("username")).thenReturn("test username");
+        Mockito.when(mockRequest.getParameter("password")).thenReturn("test password");
+
+        UserStore mockUserStore = Mockito.mock(UserStore.class);
+        Mockito.when(mockUserStore.isUserRegistered("test username")).thenReturn(false);
+        registerServlet.setUserStore(mockUserStore);
+
+        registerServlet.doPost(mockRequest, mockResponse);
+
+        ArgumentCaptor<Activity> activityArgumentCaptor = ArgumentCaptor.forClass(Activity.class);
+
+        Mockito.verify(mockActivityStore).addActivity(activityArgumentCaptor.capture());
+        Assert.assertEquals("test username joined!", activityArgumentCaptor.getValue().getDescription());
+        Assert.assertEquals(ActivityTypeEnum.USER_ADDED, activityArgumentCaptor.getValue().getType());
+    }
 }

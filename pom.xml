@@ -100,6 +100,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.vladsch.flexmark</groupId>
+      <artifactId>flexmark-all</artifactId>
+      <version>0.32.24</version>
+    </dependency>
+
   </dependencies>
 
   <build>

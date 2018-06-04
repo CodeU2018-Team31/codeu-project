@@ -14,9 +14,12 @@
 
 package codeu.controller;
 
+import codeu.enumeration.ActivityTypeEnum;
+import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
+import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
@@ -46,6 +49,7 @@ public class ChatServletTest {
   private ConversationStore mockConversationStore;
   private MessageStore mockMessageStore;
   private UserStore mockUserStore;
+    private ActivityStore mockActivityStore;
 
   @Before
   public void setup() {
@@ -68,6 +72,9 @@ public class ChatServletTest {
 
     mockUserStore = Mockito.mock(UserStore.class);
     chatServlet.setUserStore(mockUserStore);
+
+      mockActivityStore = Mockito.mock(ActivityStore.class);
+      chatServlet.setActivityStore(mockActivityStore);
   }
 
   @Test
@@ -180,13 +187,18 @@ public class ChatServletTest {
     Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
     Assert.assertEquals("Test message.", messageArgumentCaptor.getValue().getContent());
 
+      ArgumentCaptor<Activity> activityArgumentCaptor = ArgumentCaptor.forClass(Activity.class);
+      Mockito.verify(mockActivityStore).addActivity(activityArgumentCaptor.capture());
+      Assert.assertEquals("test_username sent a message to test_conversation: Test message.", activityArgumentCaptor.getValue().getDescription());
+      Assert.assertEquals(ActivityTypeEnum.MESSAGE_ADDED, activityArgumentCaptor.getValue().getType());
+
     Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
   }
 
   @Test
   public void testDoPost_CleansHtmlContent() throws IOException, ServletException {
-    Mockito.when(mockRequest.getRequestURI()).thenReturn("/chat/test_conversation");
-    Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
+      Mockito.when(mockRequest.getRequestURI()).thenReturn("/chat/test_conversation");
+      Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
 
     User fakeUser =
         new User(
@@ -197,21 +209,52 @@ public class ChatServletTest {
             false);
     Mockito.when(mockUserStore.getUser("test_username")).thenReturn(fakeUser);
 
-    Conversation fakeConversation =
-        new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now());
-    Mockito.when(mockConversationStore.getConversationWithTitle("test_conversation"))
-        .thenReturn(fakeConversation);
+      Conversation fakeConversation =
+              new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now());
+      Mockito.when(mockConversationStore.getConversationWithTitle("test_conversation"))
+              .thenReturn(fakeConversation);
 
-    Mockito.when(mockRequest.getParameter("message"))
-        .thenReturn("Contains <b>html</b> and <script>JavaScript</script> content.");
+      Mockito.when(mockRequest.getParameter("message"))
+              .thenReturn("Contains <b>html</b> and <script>JavaScript</script> content.");
 
-    chatServlet.doPost(mockRequest, mockResponse);
+      chatServlet.doPost(mockRequest, mockResponse);
 
-    ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
-    Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
-    Assert.assertEquals(
-        "Contains html and  content.", messageArgumentCaptor.getValue().getContent());
+      ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
+      Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
+      Assert.assertEquals(
+              "Contains html and  content.", messageArgumentCaptor.getValue().getContent());
 
-    Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
+      Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
   }
+
+    @Test
+    public void testDoPost_AddsActivity() throws IOException, ServletException {
+        Mockito.when(mockRequest.getRequestURI()).thenReturn("/chat/test_conversation");
+        Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
+
+        User fakeUser =
+                new User(
+                        UUID.randomUUID(),
+                        "test_username",
+                        "$2a$10$bBiLUAVmUFK6Iwg5rmpBUOIBW6rIMhU1eKfi3KR60V9UXaYTwPfHy",
+                        Instant.now(),
+                        false);
+        Mockito.when(mockUserStore.getUser("test_username")).thenReturn(fakeUser);
+
+        Conversation fakeConversation =
+                new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now());
+        Mockito.when(mockConversationStore.getConversationWithTitle("test_conversation"))
+                .thenReturn(fakeConversation);
+
+        Mockito.when(mockRequest.getParameter("message")).thenReturn("Test message.");
+
+        chatServlet.doPost(mockRequest, mockResponse);
+
+        ArgumentCaptor<Activity> activityArgumentCaptor = ArgumentCaptor.forClass(Activity.class);
+        Mockito.verify(mockActivityStore).addActivity(activityArgumentCaptor.capture());
+        Assert.assertEquals(
+                "test_username sent a message to test_conversation: Test message.",
+                activityArgumentCaptor.getValue().getDescription());
+        Assert.assertEquals(ActivityTypeEnum.MESSAGE_ADDED, activityArgumentCaptor.getValue().getType());
+    }
 }

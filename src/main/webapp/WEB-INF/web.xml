@@ -77,6 +77,7 @@
   </servlet-mapping>
 
   <servlet>
+
     <servlet-name>AdminServlet</servlet-name>
     <servlet-class>codeu.controller.AdminServlet</servlet-class>
   </servlet>
@@ -85,4 +86,15 @@
     <servlet-name>AdminServlet</servlet-name>
     <url-pattern>/admin</url-pattern>
   </servlet-mapping>
+
+    <servlet-name>ProfileServlet</servlet-name>
+    <servlet-class>codeu.controller.ProfileServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ProfileServlet</servlet-name>
+    <url-pattern>/profile</url-pattern>
+  </servlet-mapping>
+
+
 </web-app>

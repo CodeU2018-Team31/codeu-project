@@ -14,16 +14,22 @@
 
 package codeu.model.store.persistence;
 
+import codeu.enumeration.ActivityTypeEnum;
+import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentDataStoreException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,6 +156,42 @@ public class PersistentDataStore {
     return messages;
   }
 
+  /**
+   * Loads {@link Activity} objects from the Datastore service that were created before the provided datetime,
+   * up to the provided limit of number of entries and sorted in descending order by creation time.
+   *
+   * @param startDatetime The retrieved activities would have been created exclusively before the startDatetime
+   * @param limit         The max. number of entries to retrieve
+   * @return A list of activities that met the criteria and sorted by creation time
+   * @throws PersistentDataStoreException if an error was detected during the load from the
+   *                                      Datastore service
+   */
+  public List<Activity> loadActivitiesBeforeDatetime(Instant startDatetime, int limit) throws PersistentDataStoreException {
+    Query query = new Query("chat-activities")
+            .setFilter(new FilterPredicate("datetime", FilterOperator.LESS_THAN, startDatetime.toString()))
+            .addSort("datetime", SortDirection.DESCENDING);
+
+    List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(limit));
+    List<Activity> activities = new ArrayList<>();
+
+    for (Entity entity : results) {
+      try {
+        UUID id = UUID.fromString((String) entity.getProperty("id"));
+        String description = (String) entity.getProperty("description");
+        Instant datetime = Instant.parse((String) entity.getProperty("datetime"));
+        int typeIndex = Math.toIntExact((long) entity.getProperty("type")); //convert type index from long to int
+        ActivityTypeEnum type = ActivityTypeEnum.values()[typeIndex]; //convert type index into the enum value
+
+        Activity activity = new Activity(id, description, datetime, type);
+        activities.add(activity);
+      } catch (Exception e) {
+        throw new PersistentDataStoreException(e);
+      }
+    }
+
+    return activities;
+  }
+
   /** Write a User object to the Datastore service. */
   public void writeThrough(User user) {
     Entity userEntity = new Entity("chat-users", user.getId().toString());
@@ -180,6 +222,18 @@ public class PersistentDataStore {
     conversationEntity.setProperty("title", conversation.getTitle());
     conversationEntity.setProperty("creation_time", conversation.getCreationTime().toString());
     datastore.put(conversationEntity);
+  }
+
+  /**
+   * Write an {@link Activity} object to the Datastore service.
+   */
+  public void writeThrough(Activity activity) {
+    Entity activityEntity = new Entity("chat-activities", activity.getId().toString());
+    activityEntity.setProperty("id", activity.getId().toString());
+    activityEntity.setProperty("description", activity.getDescription());
+    activityEntity.setProperty("datetime", activity.getDatetime().toString());
+    activityEntity.setProperty("type", activity.getType().ordinal()); //store the index of the enum value
+    datastore.put(activityEntity);
   }
 }
 
