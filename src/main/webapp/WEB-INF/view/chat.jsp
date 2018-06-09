@@ -40,7 +40,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
           </script>
     </jsp:attribute>
     <jsp:attribute name="bodyContent">
-            <h1><%= conversation.getTitle() %>
+            <h1><%= request.getAttribute("customChatTitle") != null ? request.getAttribute("customChatTitle") : conversation.getTitle() %>
               <a href="" style="float: right">&#8635;</a></h1>
 
             <hr/>
@@ -62,7 +62,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
             <hr/>
 
             <% if (request.getSession().getAttribute("user") != null) { %>
-            <form action="/chat/<%= conversation.getTitle() %>" method="POST">
+            <form action='<%= (String)request.getAttribute("messagePostUrl") %>' method="POST">
                 <input type="text" name="message">
                 <br/>
                 <button type="submit">Send</button>
