@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import codeu.enumeration.ActivityTypeEnum;
 import codeu.model.data.Activity;
+import codeu.model.data.Conversation;
 import codeu.model.store.basic.ActivityStore;
+import codeu.model.store.basic.ConversationStore;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -67,7 +69,10 @@ public class RegisterServletTest {
 
     UserStore mockUserStore = Mockito.mock(UserStore.class);
     Mockito.when(mockUserStore.isUserRegistered("test username")).thenReturn(false);
+
+    ConversationStore mockConversationStore = Mockito.mock(ConversationStore.class);
     registerServlet.setUserStore(mockUserStore);
+    registerServlet.setConversationStore(mockConversationStore);
 
     registerServlet.doPost(mockRequest, mockResponse);
 
@@ -80,6 +85,13 @@ public class RegisterServletTest {
     Assert.assertEquals(60, userArgumentCaptor.getValue().getPasswordHash().length());
     Assert.assertEquals(false, userArgumentCaptor.getValue().getAdmin());
 
+    //Chatbot conversation
+    ArgumentCaptor<Conversation> conversationArgumentCaptor = ArgumentCaptor.forClass(Conversation.class);
+    Mockito.verify(mockConversationStore).addConversation(conversationArgumentCaptor.capture());
+    Assert.assertEquals("chatbot-" + "test username".hashCode(), conversationArgumentCaptor.getValue().getTitle());
+    Assert.assertEquals(userArgumentCaptor.getValue().getId(), conversationArgumentCaptor.getValue().getOwnerId());
+    Assert.assertTrue(conversationArgumentCaptor.getValue().isPrivate());
+
     Mockito.verify(mockResponse).sendRedirect("/login");
   }
 
@@ -90,7 +102,11 @@ public class RegisterServletTest {
 
     UserStore mockUserStore = Mockito.mock(UserStore.class);
     Mockito.when(mockUserStore.isUserRegistered("admin")).thenReturn(false);
+
+    ConversationStore mockConversationStore = Mockito.mock(ConversationStore.class);
+
     registerServlet.setUserStore(mockUserStore);
+    registerServlet.setConversationStore(mockConversationStore);
 
     registerServlet.doPost(mockRequest, mockResponse);
 
@@ -100,6 +116,8 @@ public class RegisterServletTest {
     Assert.assertEquals("admin", userArgumentCaptor.getValue().getName());
     Assert.assertEquals(true, userArgumentCaptor.getValue().getAdmin());
 
+    Mockito.verify(mockConversationStore).addConversation(Mockito.any(Conversation.class));
+
     Mockito.verify(mockResponse).sendRedirect("/login");
   }
   @Test
@@ -108,7 +126,11 @@ public class RegisterServletTest {
 
     UserStore mockUserStore = Mockito.mock(UserStore.class);
     Mockito.when(mockUserStore.isUserRegistered("test username")).thenReturn(true);
+
+    ConversationStore mockConversationStore = Mockito.mock(ConversationStore.class);
+
     registerServlet.setUserStore(mockUserStore);
+    registerServlet.setConversationStore(mockConversationStore);
 
     registerServlet.doPost(mockRequest, mockResponse);
 
@@ -124,7 +146,11 @@ public class RegisterServletTest {
 
         UserStore mockUserStore = Mockito.mock(UserStore.class);
         Mockito.when(mockUserStore.isUserRegistered("test username")).thenReturn(false);
+
+      ConversationStore mockConversationStore = Mockito.mock(ConversationStore.class);
+
         registerServlet.setUserStore(mockUserStore);
+      registerServlet.setConversationStore(mockConversationStore);
 
         registerServlet.doPost(mockRequest, mockResponse);
 
