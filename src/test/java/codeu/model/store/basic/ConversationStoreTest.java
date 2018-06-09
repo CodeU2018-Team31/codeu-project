@@ -20,6 +20,10 @@ public class ConversationStoreTest {
       new Conversation(
           UUID.randomUUID(), UUID.randomUUID(), "conversation_one", Instant.ofEpochMilli(1000));
 
+  private final Conversation CONVERSATION_TWO =
+          new Conversation(
+                  UUID.randomUUID(), UUID.randomUUID(), "conversation_two", Instant.ofEpochMilli(1000));
+
   @Before
   public void setup() {
     mockPersistentStorageAgent = Mockito.mock(PersistentStorageAgent.class);
@@ -27,6 +31,8 @@ public class ConversationStoreTest {
 
     final List<Conversation> conversationList = new ArrayList<>();
     conversationList.add(CONVERSATION_ONE);
+    CONVERSATION_TWO.setPrivate(true);
+    conversationList.add(CONVERSATION_TWO);
     conversationStore.setConversations(conversationList);
   }
 
@@ -43,6 +49,13 @@ public class ConversationStoreTest {
     Conversation resultConversation = conversationStore.getConversationWithTitle("unfound_title");
 
     Assert.assertNull(resultConversation);
+  }
+
+  @Test
+  public void testGetAllPublicConversations() {
+    List<Conversation> publicConversations = conversationStore.getAllPublicConversations();
+    Assert.assertEquals(1, publicConversations.size());
+    Assert.assertEquals(CONVERSATION_ONE, publicConversations.get(0));
   }
 
   @Test
