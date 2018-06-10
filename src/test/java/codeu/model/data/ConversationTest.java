@@ -38,19 +38,6 @@ public class ConversationTest {
   }
 
     @Test
-    public void test_setTitle() {
-        UUID id = UUID.randomUUID();
-        UUID owner = UUID.randomUUID();
-        String title = "Test_Title";
-        Instant creation = Instant.now();
-
-        Conversation conversation = new Conversation(id, owner, title, creation);
-        conversation.setTitle("set_test_title");
-
-        Assert.assertEquals("set_test_title", conversation.getTitle());
-    }
-
-    @Test
     public void test_set_private() {
         UUID id = UUID.randomUUID();
         UUID owner = UUID.randomUUID();
