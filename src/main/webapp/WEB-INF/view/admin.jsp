@@ -14,41 +14,26 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  --%>
-<%@ page import= "codeu.model.data.Conversation"%>
-<%@ page import= "codeu.model.data.Message"%>
-<%@ page import= "codeu.model.data.User"%>
-<%@ page import= "codeu.model.store.persistence.PersistentDataStoreException"%>
-<%@ page import= "codeu.model.store.persistence.PersistentDataStore"%>
-<%@ page import= "com.google.appengine.api.datastore.DatastoreService"%>
-<%@ page import= "com.google.appengine.api.datastore.DatastoreServiceFactory"%>
-<%@ page import= "com.google.appengine.api.datastore.Entity"%>
-<%@ page import= "com.google.appengine.api.datastore.PreparedQuery"%>
-<%@ page import= "com.google.appengine.api.datastore.Query"%>
-<%@ page import= "com.google.appengine.api.datastore.Query.SortDirection"%>
+<%@ page import="java.util.List" %>
 <%@ page import="codeu.model.store.basic.UserStore" %>
-<%@ page import= "java.time.Instant"%>
-<%@ page import= "java.util.ArrayList"%>
-<%@ page import= "java.util.List"%>
-<%@ page import= "java.util.UUID"%>
+<%@ page import="codeu.model.store.basic.ConversationStore" %>
+<%@ page import="codeu.model.store.basic.MessageStore" %>
 <t:base>
     <jsp:attribute name="bodyContent">
     <%
-       PersistentDataStore store = new PersistentDataStore();
-
-       int numusers = store.loadUsers().size();
-
-       int numconvo = store.loadConversations().size();
-
-       int nummessage = store.loadMessages().size();
+        UserStore usr = UserStore.getInstance();
+        ConversationStore convo = ConversationStore.getInstance();
+        MessageStore msg = MessageStore.getInstance();
 
      %>
          <h1>Administration</h1>
          <p>-----------------------------------------------------------------------</p>
          <h2>Site Statistics</h2>
          <h3>Current Site Stats</h3>
-         <p>Users: <%= numusers %> </p>
-         <p>Conversations: <%= numconvo %> </p>
-         <p>Messages: <%= nummessage %> </p>
+         <p>Users: <%= usr.getUserCount() %> </p>
+         <p>Conversations: <%= convo.getConvoCount() %></p>
+         <p>Messages: <%= msg.getMsgCount() %> </p>
+         <p>Newest User: <%= usr.getNewestUser() %> </p>
 
     </jsp:attribute>
 </t:base>

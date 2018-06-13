@@ -16,6 +16,8 @@ package codeu.model.store.basic;
 
 import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentStorageAgent;
+import com.google.appengine.api.datastore.Query;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -63,7 +65,15 @@ public class UserStore {
     this.persistentStorageAgent = persistentStorageAgent;
     users = new ArrayList<>();
   }
+  /** Gets the length of list*/
+  public int getUserCount(){
+    return this.users.size();
+  }
 
+  public String getNewestUser(){
+    String name = this.users.get(users.size() - 1).getName();
+    return name;
+  }
   /**
    * Access the User object with the given name.
    *
