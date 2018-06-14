@@ -69,12 +69,16 @@ public class ConversationStore {
     return conversations;
   }
 
+
   /** Add a new conversation to the current set of conversations known to the application. */
   public void addConversation(Conversation conversation) {
     conversations.add(conversation);
     persistentStorageAgent.writeThrough(conversation);
   }
-
+  /** Gets the length of list*/
+  public int getConvoCount(){
+    return this.conversations.size();
+  }
   /** Check whether a Conversation title is already known to the application. */
   public boolean isTitleTaken(String title) {
     // This approach will be pretty slow if we have many Conversations.
