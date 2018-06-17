@@ -18,6 +18,7 @@ import codeu.model.data.Conversation;
 import codeu.model.store.persistence.PersistentStorageAgent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Store class that uses in-memory data structures to hold values and automatically loads from and
@@ -69,6 +70,12 @@ public class ConversationStore {
     return conversations;
   }
 
+    /**
+     * Gets all public conversations known to the application
+     */
+    public List<Conversation> getAllPublicConversations() {
+        return conversations.stream().filter(conversation -> !conversation.isPrivate()).collect(Collectors.toList());
+    }
 
   /** Add a new conversation to the current set of conversations known to the application. */
   public void addConversation(Conversation conversation) {

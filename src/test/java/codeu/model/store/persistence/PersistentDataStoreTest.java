@@ -90,6 +90,7 @@ public class PersistentDataStoreTest {
     String titleTwo = "Test_Title_Two";
     Instant creationTwo = Instant.ofEpochMilli(2000);
     Conversation inputConversationTwo = new Conversation(idTwo, ownerTwo, titleTwo, creationTwo);
+      inputConversationTwo.setPrivate(true);
 
     // save
     persistentDataStore.writeThrough(inputConversationOne);
@@ -104,12 +105,14 @@ public class PersistentDataStoreTest {
     Assert.assertEquals(ownerOne, resultConversationOne.getOwnerId());
     Assert.assertEquals(titleOne, resultConversationOne.getTitle());
     Assert.assertEquals(creationOne, resultConversationOne.getCreationTime());
+      Assert.assertFalse(resultConversationOne.isPrivate());
 
     Conversation resultConversationTwo = resultConversations.get(1);
     Assert.assertEquals(idTwo, resultConversationTwo.getId());
     Assert.assertEquals(ownerTwo, resultConversationTwo.getOwnerId());
     Assert.assertEquals(titleTwo, resultConversationTwo.getTitle());
     Assert.assertEquals(creationTwo, resultConversationTwo.getCreationTime());
+      Assert.assertTrue(resultConversationTwo.isPrivate());
   }
 
   @Test

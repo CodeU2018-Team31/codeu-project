@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import codeu.enumeration.ActivityTypeEnum;
 import codeu.model.data.Activity;
+import codeu.model.data.Conversation;
 import codeu.model.store.basic.ActivityStore;
+import codeu.model.store.basic.ConversationStore;
 import org.mindrot.jbcrypt.BCrypt;
 
 import codeu.model.data.User;
@@ -27,6 +29,8 @@ public class RegisterServlet extends HttpServlet {
      */
     private ActivityStore activityStore;
 
+    private ConversationStore conversationStore;
+
   /**
    * Set up state for handling registration-related requests. This method is only called when
    * running in a server, not when running in a test.
@@ -36,6 +40,7 @@ public class RegisterServlet extends HttpServlet {
     super.init();
     setUserStore(UserStore.getInstance());
       setActivityStore(ActivityStore.getInstance());
+      setConversationStore(ConversationStore.getInstance());
   }
 
   /**
@@ -45,6 +50,14 @@ public class RegisterServlet extends HttpServlet {
   void setUserStore(UserStore userStore) {
     this.userStore = userStore;
   }
+
+    /**
+     * Sets the {@link ConversationStore} used by this servlet. This function provides a common setup method for use
+     * by the test framework or the servlet's init() function.
+     */
+    void setConversationStore(ConversationStore conversationStore) {
+        this.conversationStore = conversationStore;
+    }
 
     /**
      * Sets the {@link ActivityStore} used by this servlet. This function provides a common setup method for use
@@ -82,12 +95,12 @@ public class RegisterServlet extends HttpServlet {
     String password = request.getParameter("password");
     String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-
+      User user;
     if (username.matches("admin") && password.matches("eastcode")) {
-      User user = new User(UUID.randomUUID(), username, hashedPassword, Instant.now(), true);
+        user = new User(UUID.randomUUID(), username, hashedPassword, Instant.now(), true);
       userStore.addUser(user);
     }else {
-      User user = new User(UUID.randomUUID(), username, hashedPassword, Instant.now(), false);
+        user = new User(UUID.randomUUID(), username, hashedPassword, Instant.now(), false);
       userStore.addUser(user);
     }
 
@@ -95,6 +108,13 @@ public class RegisterServlet extends HttpServlet {
       String activityDescription = String.format("%s joined!", username);
       Activity activity = new Activity(UUID.randomUUID(), activityDescription, Instant.now(), ActivityTypeEnum.USER_ADDED);
       activityStore.addActivity(activity);
+
+
+      //Create chatbot conversation for user
+      final String conversationName = "chatbot-" + username.hashCode();
+      Conversation chatbotConversation = new Conversation(UUID.randomUUID(), user.getId(), conversationName, Instant.now());
+      chatbotConversation.setPrivate(true);
+      conversationStore.addConversation(chatbotConversation);
 
     response.sendRedirect("/login");
   }

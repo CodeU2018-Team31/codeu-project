@@ -23,16 +23,30 @@ public class ConversationTest {
 
   @Test
   public void testCreate() {
-    UUID id = UUID.randomUUID();
-    UUID owner = UUID.randomUUID();
-    String title = "Test_Title";
-    Instant creation = Instant.now();
+      UUID id = UUID.randomUUID();
+      UUID owner = UUID.randomUUID();
+      String title = "Test_Title";
+      Instant creation = Instant.now();
 
-    Conversation conversation = new Conversation(id, owner, title, creation);
+      Conversation conversation = new Conversation(id, owner, title, creation);
 
-    Assert.assertEquals(id, conversation.getId());
-    Assert.assertEquals(owner, conversation.getOwnerId());
-    Assert.assertEquals(title, conversation.getTitle());
-    Assert.assertEquals(creation, conversation.getCreationTime());
+      Assert.assertEquals(id, conversation.getId());
+      Assert.assertEquals(owner, conversation.getOwnerId());
+      Assert.assertEquals(title, conversation.getTitle());
+      Assert.assertEquals(creation, conversation.getCreationTime());
+      Assert.assertFalse(conversation.isPrivate());
   }
+
+    @Test
+    public void test_set_private() {
+        UUID id = UUID.randomUUID();
+        UUID owner = UUID.randomUUID();
+        String title = "Test_Title";
+        Instant creation = Instant.now();
+
+        Conversation conversation = new Conversation(id, owner, title, creation);
+        conversation.setPrivate(true);
+
+        Assert.assertTrue(conversation.isPrivate());
+    }
 }

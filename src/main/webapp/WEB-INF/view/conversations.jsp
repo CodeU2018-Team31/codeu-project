@@ -40,6 +40,10 @@
 
         <h1>Conversations</h1>
 
+        <ul class="mdl-list">
+            <li><a href="/bot">EastBot</a></li>
+        </ul>
+
         <%
         List<Conversation> conversations =
           (List<Conversation>) request.getAttribute("conversations");

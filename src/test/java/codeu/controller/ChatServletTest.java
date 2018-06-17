@@ -102,6 +102,7 @@ public class ChatServletTest {
 
     Mockito.verify(mockRequest).setAttribute("conversation", fakeConversation);
     Mockito.verify(mockRequest).setAttribute("messages", fakeMessageList);
+    Mockito.verify(mockRequest).setAttribute("messagePostUrl", "/chat/test_conversation");
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }
 
