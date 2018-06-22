@@ -6,6 +6,7 @@ import codeu.model.data.User;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
+import codeu.service.BotService;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
@@ -23,6 +24,7 @@ public class BotServlet extends HttpServlet {
     private ConversationStore conversationStore;
     private MessageStore messageStore;
     private UserStore userStore;
+    private BotService botService;
 
     /**
      * Sets the {@link ConversationStore} used by this servlet. This function provides a common setup method
@@ -49,6 +51,14 @@ public class BotServlet extends HttpServlet {
     }
 
     /**
+     * Sets the {@link BotService} used by this servlet. This function provides a common setup method
+     * for use by the test framework or the servlet's init() function.
+     */
+    void setBotService(BotService botService) {
+        this.botService = botService;
+    }
+
+    /**
      * Set up state for handling chat requests.
      */
     @Override
@@ -57,6 +67,7 @@ public class BotServlet extends HttpServlet {
         setConversationStore(ConversationStore.getInstance());
         setMessageStore(MessageStore.getInstance());
         setUserStore(UserStore.getInstance());
+        setBotService(new BotService());
     }
 
     /**
@@ -141,6 +152,18 @@ public class BotServlet extends HttpServlet {
                         Instant.now());
 
         messageStore.addMessage(message);
+
+        String responseMessageContent = this.botService.process(cleanedMessageContent);
+
+        Message responseMessage =
+                new Message(
+                        UUID.randomUUID(),
+                        conversation.getId(),
+                        user.getId(),
+                        responseMessageContent,
+                        Instant.now());
+
+        messageStore.addMessage(responseMessage);
 
         // redirect to a GET request
         response.sendRedirect("/bot");

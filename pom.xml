@@ -106,6 +106,18 @@
       <version>0.32.24</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.glassfish.jersey.inject</groupId>
+      <artifactId>jersey-hk2</artifactId>
+      <version>2.26</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>2.26</version>
+    </dependency>
+
   </dependencies>
 
   <build>
