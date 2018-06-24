@@ -8,7 +8,11 @@ import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
 import codeu.model.store.persistence.PersistentDataStoreException;
 import codeu.model.store.persistence.PersistentStorageAgent;
+import org.mindrot.jbcrypt.BCrypt;
+
+import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -31,6 +35,10 @@ public class ServerStartupListener implements ServletContextListener {
       List<Message> messages = PersistentStorageAgent.getInstance().loadMessages();
       MessageStore.getInstance().setMessages(messages);
 
+      if(UserStore.getInstance().getUser("EastBot") == null){
+        initializeChatBot();
+      }
+
     } catch (PersistentDataStoreException e) {
       System.err.println("Server didn't start correctly. An error occurred during Datastore load!");
       System.err.println("This is usually caused by loading data that's in an invalid format.");
@@ -41,4 +49,10 @@ public class ServerStartupListener implements ServletContextListener {
 
   @Override
   public void contextDestroyed(ServletContextEvent sce) {}
+
+  private void initializeChatBot(){
+    String randomHash = BCrypt.hashpw(UUID.randomUUID().toString(), BCrypt.gensalt());
+    User chatBot = new User(UUID.randomUUID(), "EastBot", randomHash, Instant.now(), false);
+    UserStore.getInstance().addUser(chatBot);
+  }
 }

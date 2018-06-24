@@ -7,6 +7,7 @@ import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
 import codeu.service.BotService;
+import org.apache.http.HttpException;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
@@ -153,13 +154,22 @@ public class BotServlet extends HttpServlet {
 
         messageStore.addMessage(message);
 
-        String responseMessageContent = this.botService.process(cleanedMessageContent);
+        String responseMessageContent;
+        try{
+            responseMessageContent = botService.process(cleanedMessageContent);
+        }
+        catch(IOException | HttpException ex){
+            responseMessageContent = "Oh, it seems we could not reach EastBot right now! Please try again soon, or let an admin"+
+                    " know if the issue persists!";
+        }
+
+        User chatbot = userStore.getUser("EastBot");
 
         Message responseMessage =
                 new Message(
                         UUID.randomUUID(),
                         conversation.getId(),
-                        user.getId(),
+                        chatbot.getId(),
                         responseMessageContent,
                         Instant.now());
 
