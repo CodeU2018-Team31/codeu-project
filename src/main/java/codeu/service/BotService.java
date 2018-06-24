@@ -20,21 +20,21 @@ import java.util.Map;
  * such interactions as necessary.
  */
 public class BotService {
-    //The web client we will be using to make HTTP requests
-    private CloseableHttpClient webClient;
-    private JsonObjectParser parser;
-    private CryptService crypt;
+    private CloseableHttpClient webClient; //The web client we will be using to make HTTP requests
+    private JsonObjectParser parser; // A parser that allows us to make Maps out of JSON string responses
+    private CryptService crypt; //The encrypt/decrypt service
 
     public BotService(){
-        //Initialize with a new HTTP client
-        this(HttpClientBuilder.create().build(), new JsonObjectParser(new JacksonFactory())); //Initialize the JSON parser
+        //Initialize with a new HTTP client and JSON parser
+        this(HttpClientBuilder.create().build(), new JsonObjectParser(new JacksonFactory()));
     }
 
     /**
      * This additional constructor providers a uniform way to initialize
-     * the web client regularly or to mock it
+     * the web client and JSON parser regularly or to mock them
      *
      * @param webClient The client to be used for making HTTP requests by the service
+     * @param parser The JSON parser to be used for parsing HTTP responses
      */
     public BotService(CloseableHttpClient webClient, JsonObjectParser parser){
         this.webClient = webClient;
@@ -58,7 +58,7 @@ public class BotService {
                 "\t\"v\": 20170712,\n" + //The version of the DialogFlow API
                 "\t\"query\": \""+query+"\",\n" + //The provided query to process
                 "\t\"lang\": \"en\",\n" + //Assume the language to be in English
-                "\t\"sessionId\": \"0\"\n" + //A session ID to keep track of its corresponding requests
+                "\t\"sessionId\": \"0\"\n" + //A session ID to keep track of its corresponding requests. Required by API, but we dont need it.
                 "}";
 
         HashMap response = this.request("query", requestBody);
@@ -95,13 +95,11 @@ public class BotService {
         //Declare the use of JSON
         request.addHeader("Content-Type", "application/json");
         //Auth token to allow us to use the API
-        request.addHeader("Authorization", "Bearer "+this.crypt.decrypt("sCpnr>?r>pEnAEp>nproq=>osnoAEA=D"));
+        request.addHeader("Authorization", "Bearer "+crypt.decrypt("sCpnr>?r>pEnAEp>nproq=>osnoAEA=D"));
 
-        HashMap responseBody;
-
-        HttpResponse response = this.webClient.execute(request); //Make the HTTP request
+        HttpResponse response = webClient.execute(request); //Make the HTTP request
         //Parse the response into a HashMap
-        responseBody = parser.parseAndClose(response.getEntity().getContent(), StandardCharsets.UTF_8, HashMap.class);
+        HashMap responseBody = parser.parseAndClose(response.getEntity().getContent(), StandardCharsets.UTF_8, HashMap.class);
 
         return responseBody;
     }
