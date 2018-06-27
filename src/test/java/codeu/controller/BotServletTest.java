@@ -21,6 +21,9 @@ import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
+import codeu.service.BotService;
+import org.apache.http.HttpException;
+import org.apache.tools.ant.taskdefs.condition.Http;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +52,7 @@ public class BotServletTest {
     private MessageStore mockMessageStore;
     private UserStore mockUserStore;
     private ActivityStore mockActivityStore;
+    private BotService mockBotService;
 
     @Before
     public void setup() {
@@ -71,6 +75,9 @@ public class BotServletTest {
 
         mockUserStore = Mockito.mock(UserStore.class);
         botServlet.setUserStore(mockUserStore);
+
+        mockBotService = Mockito.mock(BotService.class);
+        botServlet.setBotService(mockBotService);
     }
 
     @Test
@@ -127,11 +134,13 @@ public class BotServletTest {
     }
 
     @Test
-    public void testDoPost() throws IOException, ServletException {
+    public void testDoPost() throws IOException, ServletException, HttpException {
         String username = "mock_user";
         Mockito.when(mockSession.getAttribute("user")).thenReturn(username);
 
         UUID fakeConversationId = UUID.randomUUID();
+        UUID fakeChatBotId = UUID.randomUUID();
+
         Conversation fakeConversation =
                 new Conversation(fakeConversationId, UUID.randomUUID(), "test_conversation", Instant.now());
 
@@ -139,15 +148,24 @@ public class BotServletTest {
                 .thenReturn(fakeConversation);
 
         User fakeUser = new User(UUID.randomUUID(), username, "@@#!#!@@@", Instant.now(), false);
+        User chatBot = new User(fakeChatBotId, "EastBot", "@@#!#!@@@", Instant.now(), false);
         Mockito.when(mockUserStore.getUser(username)).thenReturn(fakeUser);
 
         Mockito.when(mockRequest.getParameter("message")).thenReturn("mock_message");
+        Mockito.when(mockBotService.process("mock_message")).thenReturn("mock bot response");
+        Mockito.when(mockUserStore.getUser("EastBot")).thenReturn(chatBot);
 
         botServlet.doPost(mockRequest, mockResponse);
 
         ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
-        Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
-        Assert.assertEquals("mock_message", messageArgumentCaptor.getValue().getContent());
+        Mockito.verify(mockMessageStore, Mockito.times(2)).addMessage(messageArgumentCaptor.capture());
+        List<Message> capturedMessages = messageArgumentCaptor.getAllValues();
+
+        Assert.assertEquals("mock_message", capturedMessages.get(0).getContent());
+
+        Assert.assertEquals("mock bot response", capturedMessages.get(1).getContent());
+        Assert.assertEquals(fakeConversationId, capturedMessages.get(1).getConversationId());
+        Assert.assertEquals(fakeChatBotId, capturedMessages.get(1).getAuthorId());
     }
 
     @Test
