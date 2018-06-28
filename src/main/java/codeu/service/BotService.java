@@ -1,7 +1,7 @@
 package codeu.service;
 
-import com.google.appengine.repackaged.com.google.api.client.json.JsonObjectParser;
-import com.google.appengine.repackaged.com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.client.json.JsonObjectParser;
+import com.google.api.client.json.jackson.JacksonFactory;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;

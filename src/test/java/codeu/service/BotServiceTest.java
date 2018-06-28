@@ -1,6 +1,6 @@
 package codeu.service;
 
-import com.google.appengine.repackaged.com.google.api.client.json.JsonObjectParser;
+import com.google.api.client.json.JsonObjectParser;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.client.methods.CloseableHttpResponse;
