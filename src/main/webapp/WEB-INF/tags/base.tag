@@ -22,6 +22,7 @@
 <head>
   <title><%= title != null ? title : "EastCode Chat" %></title>
   <link rel="stylesheet" href="/css/main.css">
+  <link href="https://fonts.googleapis.com/css?family=Encode+Sans+Condensed" rel="stylesheet">
   ${headContent}
 </head>
 <body>
@@ -31,12 +32,13 @@
     <a href="/conversations">Conversations</a>
     <a href="/activity">Activity Feed</a>
     <a href="/admin">Administration</a>
-    <% if(request.getSession().getAttribute("user") != null){ %>
-      <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
-    <% } else{ %>
-      <a href="/login">Login</a>
+    <% if(request.getSession().getAttribute("user") == null){ %>
+          <a href="/login">Login</a>
     <% } %>
     <a href="/about.jsp">About</a>
+    <% if(request.getSession().getAttribute("user") != null){ %>
+      <a id="greeting">Hello <%= request.getSession().getAttribute("user") %>!</a>
+    <% } %>
   </nav>
 
   <div id="container">
