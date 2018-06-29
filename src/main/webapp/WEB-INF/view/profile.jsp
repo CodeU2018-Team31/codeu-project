@@ -15,7 +15,7 @@
   limitations under the License.
 --%>
 <t:base>
-<jsp:attribute name="title">Profile</jsp:attribute>
+    <jsp:attribute name="title">Profile</jsp:attribute>
     <jsp:attribute name="bodyContent">
     <% if(request.getSession().getAttribute("user") != null){ %>
           <h1>Hello <%= request.getSession().getAttribute("user") %>!</h1>
