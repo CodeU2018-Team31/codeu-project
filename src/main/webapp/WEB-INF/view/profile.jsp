@@ -15,7 +15,16 @@
   limitations under the License.
 --%>
 <t:base>
+<jsp:attribute name="title">Profile</jsp:attribute>
     <jsp:attribute name="bodyContent">
-        <h1> Hello <%= request.getParameter("username") %>! </h1>
+    <% if(request.getSession().getAttribute("user") != null){ %>
+          <h1>Hello <%= request.getSession().getAttribute("user") %>!</h1>
+        <% } else{ %>
+          <h1> Hello </h1>
+        <% } %>
+        <h2> Welcome to your profile </h2>
+
+        <button> Upload </button>
+
     </jsp:attribute>
 </t:base>
