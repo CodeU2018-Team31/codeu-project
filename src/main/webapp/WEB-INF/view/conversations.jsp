@@ -27,7 +27,7 @@
         <% if(request.getSession().getAttribute("user") != null){ %>
           <h1>New Conversation</h1>
           <form action="/conversations" method="POST">
-              <div class="form-group">
+              <div class="form-group" style="margin-bottom: 16px;">
                 <label class="form-control-label">Title:</label>
               <input type="text" name="conversationTitle">
             </div>
@@ -35,7 +35,7 @@
             <button type="submit">Create</button>
           </form>
 
-          <hr/>
+          <hr class="groove"/>
         <% } %>
 
         <h1>Conversations</h1>
@@ -67,7 +67,7 @@
         <%
         }
         %>
-        <hr/>
+        <hr class="groove"/>
     </jsp:attribute>
 </t:base>
 

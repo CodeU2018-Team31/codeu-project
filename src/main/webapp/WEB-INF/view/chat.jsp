@@ -22,14 +22,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 <t:base>
     <jsp:attribute name="title"><%= conversation.getTitle() %></jsp:attribute>
     <jsp:attribute name="headContent">
-         <style>
-            #chat {
-              background-color: white;
-              height: 500px;
-              overflow-y: scroll
-            }
-          </style>
-
+            <link rel="stylesheet" href="/css/chat.css">
           <script>
             // scroll the chat div to the bottom
             function scrollChat() {
@@ -41,7 +34,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
     </jsp:attribute>
     <jsp:attribute name="bodyContent">
             <h1><%= request.getAttribute("customChatTitle") != null ? request.getAttribute("customChatTitle") : conversation.getTitle() %>
-              <a href="" style="float: right">&#8635;</a></h1>
+              <a href="" id="refresh">&#8635;</a></h1>
 
             <hr/>
 
@@ -59,18 +52,16 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
               </ul>
             </div>
 
-            <hr/>
-
-            <% if (request.getSession().getAttribute("user") != null) { %>
-            <form action='<%= (String)request.getAttribute("messagePostUrl") %>' method="POST">
-                <input type="text" name="message">
-                <br/>
-                <button type="submit">Send</button>
-            </form>
-            <% } else { %>
-              <p><a href="/login">Login</a> to send a message.</p>
-            <% } %>
-
-            <hr/>
+            <div id="input-area">
+                <% if (request.getSession().getAttribute("user") != null) { %>
+                <form action='<%= (String)request.getAttribute("messagePostUrl") %>' method="POST">
+                    <input id="message-input" type="text" name="message">
+                    <br/>
+                    <button id="message-submit" type="submit">Send</button>
+                </form>
+                <% } else { %>
+                  <p><a href="/login">Login</a> to send a message.</p>
+                <% } %>
+            </div>
     </jsp:attribute>
 </t:base>
