@@ -28,6 +28,7 @@
 
   <nav>
     <a id="navTitle" href="/">&lt;EastCode/&gt;</a>
+    <a href="/profile">Profile</a>
     <a href="/conversations">Conversations</a>
     <a href="/activity">Activity Feed</a>
     <a href="/admin">Administration</a>
