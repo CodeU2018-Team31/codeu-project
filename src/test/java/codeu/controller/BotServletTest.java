@@ -152,7 +152,7 @@ public class BotServletTest {
         Mockito.when(mockUserStore.getUser(username)).thenReturn(fakeUser);
 
         Mockito.when(mockRequest.getParameter("message")).thenReturn("mock_message");
-        Mockito.when(mockBotService.process("mock_message")).thenReturn("mock bot response");
+        Mockito.when(mockBotService.process("mock_message", fakeUser)).thenReturn("mock bot response");
         Mockito.when(mockUserStore.getUser("EastBot")).thenReturn(chatBot);
 
         botServlet.doPost(mockRequest, mockResponse);
