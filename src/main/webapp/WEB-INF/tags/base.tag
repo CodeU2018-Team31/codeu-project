@@ -35,6 +35,8 @@
     <a href="/admin">Administration</a>
     <% if(request.getSession().getAttribute("user") == null){ %>
           <a href="/login">Login</a>
+    <% } else { %>
+           <a href="/notifications">Notifications</a>
     <% } %>
     <a href="/about.jsp">About</a>
     <% if(request.getSession().getAttribute("user") != null){ %>

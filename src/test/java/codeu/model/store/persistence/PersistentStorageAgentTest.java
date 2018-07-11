@@ -5,6 +5,7 @@ import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
+import codeu.model.data.Notification;
 import java.time.Instant;
 import java.util.UUID;
 import org.junit.Before;
@@ -55,6 +56,13 @@ public class PersistentStorageAgentTest {
   }
 
   @Test
+  public void testLoadNotifications() throws PersistentDataStoreException {
+    persistentStorageAgent.loadNotifications();
+    Mockito.verify(mockPersistentDataStore).loadNotifications();
+  }
+
+
+  @Test
   public void testWriteThroughUser() {
     User user =
         new User(
@@ -102,5 +110,14 @@ public class PersistentStorageAgentTest {
                     UUID.randomUUID(), "User joined!", Instant.now(), ActivityTypeEnum.USER_ADDED);
     persistentStorageAgent.writeThrough(activity);
     Mockito.verify(mockPersistentDataStore).writeThrough(activity);
+  }
+
+  @Test
+  public void testWriteThroughNotification() {
+    Notification notification =
+            new Notification(
+                    UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), "test @test_username content", UUID.randomUUID());
+    persistentStorageAgent.writeThrough(notification);
+    Mockito.verify(mockPersistentDataStore).writeThrough(notification);
   }
 }

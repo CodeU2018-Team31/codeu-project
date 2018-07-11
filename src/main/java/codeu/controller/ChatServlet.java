@@ -16,6 +16,7 @@ package codeu.controller;
 
 import codeu.enumeration.ActivityTypeEnum;
 import codeu.model.data.Activity;
+import codeu.model.data.Notification;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
@@ -23,6 +24,7 @@ import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
+import codeu.model.store.basic.NotificationStore;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -46,6 +48,9 @@ public class ChatServlet extends HttpServlet {
   /** Store class that gives access to Users. */
   private UserStore userStore;
 
+  /** Store class that gives access to Notifications. */
+  private NotificationStore notificationStore;
+
     /**
      * Store class that gives access to Activities.
      */
@@ -58,6 +63,7 @@ public class ChatServlet extends HttpServlet {
     setConversationStore(ConversationStore.getInstance());
     setMessageStore(MessageStore.getInstance());
     setUserStore(UserStore.getInstance());
+    setNotificationStore(NotificationStore.getInstance());
       setActivityStore(ActivityStore.getInstance());
   }
 
@@ -75,6 +81,14 @@ public class ChatServlet extends HttpServlet {
    */
   void setMessageStore(MessageStore messageStore) {
     this.messageStore = messageStore;
+  }
+
+  /**
+   * Sets the NotificationStore used by this servlet. This function provides a common setup method for
+   * use by the test framework or the servlet's init() function.
+   */
+  void setNotificationStore(NotificationStore notificationStore) {
+    this.notificationStore = notificationStore;
   }
 
   /**
@@ -170,6 +184,18 @@ public class ChatServlet extends HttpServlet {
             Instant.now());
 
     messageStore.addMessage(message);
+    UUID mentionedUser = notificationStore.getuserMentioned(message.getContent());
+    //Add notification if a user is mentioned
+      if(mentionedUser != null) {
+        String notificationinfo = String.format("%s mentioned you in %s: %s", username, conversationTitle, message.getContent());
+        Notification notification =
+                new Notification(UUID.randomUUID(),
+                                 user.getId(),
+                                 conversation.getId(),
+                                 notificationinfo,
+                                 mentionedUser);
+        notificationStore.addNotification(notification);
+      }
 
       //Log Activity for message creation
       String activityDescription = String.format("%s sent a message to %s: %s", username, conversationTitle, messageContent);

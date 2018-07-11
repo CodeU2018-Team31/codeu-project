@@ -18,6 +18,7 @@ import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
+import codeu.model.data.Notification;
 import codeu.model.store.persistence.PersistentDataStore;
 
 import java.time.Instant;
@@ -93,6 +94,16 @@ public class PersistentStorageAgent {
   }
 
   /**
+   * Retrieve all Notification objects from the Datastore service. The returned list may be empty.
+   *
+   * @throws PersistentDataStoreException if an error was detected during the load from the
+   *     Datastore service
+   */
+  public List<Notification> loadNotifications() throws PersistentDataStoreException {
+    return persistentDataStore.loadNotifications();
+  }
+
+  /**
    * Retrieve Activity objects after a given datetime and up to a provided limit of entries from the Datastore service.
    * The returned list may be empty.
    *
@@ -108,12 +119,17 @@ public class PersistentStorageAgent {
     persistentDataStore.writeThrough(user);
   }
 
-  /** Write a Message object to the Datastore service. */
+  /** Write a Conversation object to the Datastore service. */
   public void writeThrough(Conversation conversation) {
     persistentDataStore.writeThrough(conversation);
   }
 
-  /** Write a Conversation object to the Datastore service. */
+  /** Write a Notification object to the Datastore service. */
+  public void writeThrough(Notification notification) {
+    persistentDataStore.writeThrough(notification);
+  }
+
+  /** Write a Message object to the Datastore service. */
   public void writeThrough(Message message) {
     persistentDataStore.writeThrough(message);
   }
