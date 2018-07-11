@@ -1,5 +1,6 @@
 package codeu.service;
 
+import codeu.model.data.User;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson.JacksonFactory;
 import org.apache.http.HttpException;
@@ -23,10 +24,11 @@ public class BotService {
     private CloseableHttpClient webClient; //The web client we will be using to make HTTP requests
     private JsonObjectParser parser; // A parser that allows us to make Maps out of JSON string responses
     private CryptService crypt; //The encrypt/decrypt service
+    private ChatService chatService; //A chatService to allow for sending messages to conversations
 
     public BotService(){
-        //Initialize with a new HTTP client and JSON parser
-        this(HttpClientBuilder.create().build(), new JsonObjectParser(new JacksonFactory()));
+        //Initialize with a new HTTP client, JSON parser and ChatService
+        this(HttpClientBuilder.create().build(), new JsonObjectParser(new JacksonFactory()), new ChatService());
     }
 
     /**
@@ -35,10 +37,12 @@ public class BotService {
      *
      * @param webClient The client to be used for making HTTP requests by the service
      * @param parser The JSON parser to be used for parsing HTTP responses
+     * @param chatService The service that allows the BotService to send messages to conversations
      */
-    public BotService(CloseableHttpClient webClient, JsonObjectParser parser){
+    public BotService(CloseableHttpClient webClient, JsonObjectParser parser, ChatService chatService){
         this.webClient = webClient;
         this.parser = parser;
+        this.chatService = chatService;
         this.crypt = new CryptService();
     }
 
@@ -48,11 +52,13 @@ public class BotService {
      * response with it.
      *
      * @param query A query string to action on and/or respond to
+     * @param issuer The user that initiated the request; any action issued as a result of this query will be associated
+     *               with this parameter
      * @return The response of the chat bot to the query
      * @throws IOException If we fail to connect to an API we rely on for fulfilling the request
      * @throws HttpException If we receive a non-successful response from an API call
      */
-    public String process(String query) throws IOException, HttpException {
+    public String process(String query, User issuer) throws IOException, HttpException {
         //A JSON string representing the request body
         String requestBody = "{\n" +
                 "\t\"v\": 20170712,\n" + //The version of the DialogFlow API
@@ -70,12 +76,18 @@ public class BotService {
 
         Map queryResult = (Map)response.get("result");
         String action = (String) queryResult.get("action");
+        String chatResponse = (String) queryResult.get("speech");
 
         if(action.equals("send_message")){
-            //Send the message through the ChatService
+            try{
+                sendMessageToConversation(queryResult, issuer);
+            }
+            catch(IllegalArgumentException ex){
+                chatResponse = "Oh, I am sorry, it seems like that conversation does not exist yet!";
+            }
         }
 
-        return (String) queryResult.get("speech");
+        return chatResponse;
     }
 
     /**
@@ -102,5 +114,25 @@ public class BotService {
         HashMap responseBody = parser.parseAndClose(response.getEntity().getContent(), StandardCharsets.UTF_8, HashMap.class);
 
         return responseBody;
+    }
+
+    /**
+     * Handles processing a DialogFlow query result, in order to send a message to a conversation
+     *
+     * @param queryResult The DialogFlow query result to process. The query result has to have the following shape extract:
+     *                    {
+     *                      "parameters": {
+     *                          "message": String,
+     *                          "conversation": String
+     *                      }
+     *                    }
+     * @param author The user who will be marked as the author of the message
+     * @throws IllegalArgumentException The conversation name provided in the queryResult does not exist in store
+     */
+    private void sendMessageToConversation(Map queryResult, User author) throws IllegalArgumentException{
+        Map parameters = (Map) queryResult.get("parameters");
+        String message = (String) parameters.get("message");
+        String conversation = (String) parameters.get("conversation");
+        chatService.sendMessageToConversation(author, message, conversation);
     }
 }

@@ -156,7 +156,7 @@ public class BotServlet extends HttpServlet {
 
         String responseMessageContent;
         try{
-            responseMessageContent = botService.process(cleanedMessageContent);
+            responseMessageContent = botService.process(cleanedMessageContent, user);
         }
         catch(IOException | HttpException ex){
             responseMessageContent = "Oh, it seems we could not reach EastBot right now! Please try again soon, or let an admin"+
