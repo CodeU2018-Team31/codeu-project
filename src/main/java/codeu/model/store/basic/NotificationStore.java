@@ -79,11 +79,9 @@ public class NotificationStore {
         User matchedUser = null;
         if(matcher.find()) {
             String group = matcher.group(1);
-//            System.out.println("Username" + group); //test
             matchedUser = userStore.getUser(group);
         }
         if(matchedUser != null){
-//            System.out.println("UserID" + matchedUser.getId());
             return matchedUser.getId();
         }
         return null;
