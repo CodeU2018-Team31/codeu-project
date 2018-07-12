@@ -194,23 +194,6 @@ public class ChatServletTest {
     Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
     Assert.assertEquals("Test message.", messageArgumentCaptor.getValue().getContent());
 
-//    User tester =
-//            new User(
-//                    UUID.randomUUID(),
-//                    "test",
-//                    "$2a$10$bBiLUAVmUFK6Iwg5rmpBUOIBW6rIMhU1eKfi3KR60V9UXaYTwPfHy",
-//                    Instant.now(),
-//                    false);
-//
-//    ArgumentCaptor<Notification> notificationArgumentCaptor = ArgumentCaptor.forClass(Notification.class);
-//    Mockito.when(mockNotificationStore.isuserMentioned(mockRequest.getParameter("message"))).thenReturn(true);
-//    Mockito.when(mockNotificationStore.getuserMentioned(mockRequest.getParameter("message"))).thenReturn(tester.getId());
-//    Mockito.verify(mockNotificationStore).addNotification(notificationArgumentCaptor.capture());
-//    Assert.assertEquals(
-//            "test_username mentioned you in test_conversation: Test message.",
-//            notificationArgumentCaptor.getValue().getContent());
-//    Assert.assertEquals(tester.getId(),notificationArgumentCaptor.getValue().getMentionedId());
-
       ArgumentCaptor<Activity> activityArgumentCaptor = ArgumentCaptor.forClass(Activity.class);
       Mockito.verify(mockActivityStore).addActivity(activityArgumentCaptor.capture());
       Assert.assertEquals("test_username sent a message to test_conversation: Test message.", activityArgumentCaptor.getValue().getDescription());
