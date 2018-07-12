@@ -61,31 +61,6 @@ public class NotificationStoreTest {
     }
 
     @Test
-    public void testgetUserofNotifications_True() {
-        boolean getUserofNotifications = notificationStore.getUserofNotifications(notification.getMentionedId());
-        Assert.assertTrue(getUserofNotifications);
-    }
-
-    @Test
-    public void testgetUserofNotifications_False() {
-        boolean getUserofNotifications = notificationStore.getUserofNotifications(null);
-        Assert.assertFalse(getUserofNotifications);
-    }
-
-    @Test
-    public void testgetNotificationsofUser_found() {
-        String resultNotification = notificationStore.getNotificationsofUser(user.getId());
-        Assert.assertEquals(notification.getContent(), resultNotification);
-    }
-
-    @Test
-    public void testgetNotificationsofUser_notfound() {
-       String resultNotification = notificationStore.getNotificationsofUser(null);
-
-       Assert.assertNull(resultNotification);
-    }
-
-    @Test
     public void testAddNotification() {
         notificationStore.addNotification(notification);
         Mockito.verify(mockPersistentStorageAgent).writeThrough(notification);
