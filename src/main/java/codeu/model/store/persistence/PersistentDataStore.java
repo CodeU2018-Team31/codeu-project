@@ -170,7 +170,7 @@ public class PersistentDataStore {
     List<Notification> notifications = new ArrayList<>();
 
     // Retrieve all messages from the datastore.
-    Query query = new Query("chat-notifications").addSort("creation_time", SortDirection.ASCENDING);
+    Query query = new Query("chat-notifications");
     PreparedQuery results = datastore.prepare(query);
 
     for (Entity entity : results.asIterable()) {

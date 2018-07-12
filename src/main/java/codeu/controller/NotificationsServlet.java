@@ -48,7 +48,7 @@ public class NotificationsServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        List<Notification> notifications = new ArrayList<>();
+        List<Notification> notifications = notificationStore.loadNotifications();
         request.setAttribute("notifications", notifications);
         request.getRequestDispatcher("/WEB-INF/view/notifications.jsp").forward(request, response);
     }

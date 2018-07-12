@@ -24,7 +24,7 @@ public class NotificationStoreTest {
     public void setup() {
         mockPersistentStorageAgent = Mockito.mock(PersistentStorageAgent.class);
         userStore = UserStore.getTestInstance(mockPersistentStorageAgent);
-        notificationStore = NotificationStore.getTestInstance(mockPersistentStorageAgent);
+        notificationStore = NotificationStore.getTestInstance(mockPersistentStorageAgent, userStore);
         UUID UserId = UUID.randomUUID();
         user = new User(UserId,
                         "user1",
@@ -48,8 +48,8 @@ public class NotificationStoreTest {
 
     @Test
     public void testgetuserMentioned_found() {
-//        UUID resultID = notificationStore.getuserMentioned("test @user1 test");
-//        Assert.assertEquals(user.getId(), resultID);
+        UUID resultID = notificationStore.getuserMentioned("test @user1 test");
+        Assert.assertEquals(user.getId(), resultID);
 
     }
 

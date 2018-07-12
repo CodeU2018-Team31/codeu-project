@@ -38,19 +38,19 @@ public class NotificationStore {
      */
     public static NotificationStore getInstance() {
         if (instance == null) {
-            instance = new NotificationStore(PersistentStorageAgent.getInstance());
+            instance = new NotificationStore(PersistentStorageAgent.getInstance(), UserStore.getInstance());
 
         }
         return instance;
     }
 
     /**
-     * Instance getter function used for testing. Supply a 4mock for PersistentStorageAgent.
+     * Instance getter function used for testing. Supply a mock for PersistentStorageAgent and UserStore.
      *
      * @param persistentStorageAgent a mock used for testing
      */
-    public static NotificationStore getTestInstance(PersistentStorageAgent persistentStorageAgent) {
-        return new NotificationStore(persistentStorageAgent);
+    public static NotificationStore getTestInstance(PersistentStorageAgent persistentStorageAgent, UserStore userStore) {
+        return new NotificationStore(persistentStorageAgent, userStore);
     }
 
     /**
@@ -60,15 +60,16 @@ public class NotificationStore {
     private PersistentStorageAgent persistentStorageAgent;
 
 
-    UserStore userStore = UserStore.getInstance();
+    private UserStore userStore;
 
 
     /** The in-memory list of Notifications. */
     private List<Notification> notifications;
 
     /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
-    private NotificationStore(PersistentStorageAgent persistentStorageAgent) {
+    private NotificationStore(PersistentStorageAgent persistentStorageAgent, UserStore userStore) {
         this.persistentStorageAgent = persistentStorageAgent;
+        this.userStore = userStore;
         notifications = new ArrayList<>();
     }
 
@@ -103,6 +104,10 @@ public class NotificationStore {
             }
         }
         return null;
+    }
+
+    public List<Notification> loadNotifications(){
+        return notifications;
     }
 
     /** Add a new notification to the current set of notifications known to the application. */

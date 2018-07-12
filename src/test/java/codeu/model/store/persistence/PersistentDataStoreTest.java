@@ -204,42 +204,42 @@ public class PersistentDataStoreTest {
 
     @Test
     public void testSaveAndLoadNotifications() throws PersistentDataStoreException {
-//        UUID idOne = UUID.fromString("10000000-2222-3333-4444-555555555555");
-//        UUID authorOne = UUID.fromString("10000001-2222-3333-4444-555555555555");
-//        UUID conversationOne = UUID.fromString("10000002-2222-3333-4444-555555555555");
-//        String contentOne = "testuser mentioned you in testconversation: test @user1";
-//        UUID mentionedOne = UUID.fromString("10000003-2222-3333-4444-555555555555");
-//        Notification notificationOne =
-//                new Notification(idOne, authorOne, conversationOne, contentOne, mentionedOne);
-//
-//        UUID idTwo = UUID.fromString("10000004-2222-3333-4444-555555555555");
-//        UUID authorTwo = UUID.fromString("10000005-2222-3333-4444-555555555555");
-//        UUID conversationTwo = UUID.fromString("10000006-2222-3333-4444-555555555555");
-//        String contentTwo = "testuser mentioned you in testconversation: test @user2";
-//        UUID mentionedTwo = UUID.fromString("10000007-2222-3333-4444-555555555555");
-//        Notification notificationTwo =
-//                new Notification(idTwo, authorTwo, conversationTwo, contentTwo, mentionedTwo);
-//
-//        // save
-//        persistentDataStore.writeThrough(notificationOne);
-//        persistentDataStore.writeThrough(notificationTwo);
-//
-//        // load
-//        List<Notification> resultNotifications = persistentDataStore.loadNotifications();
-//
-//        // confirm that what we saved matches what we loaded
-//        Notification resultNotificationsOne = resultNotifications.get(0);
-//        Assert.assertEquals(idOne, resultNotificationsOne.getId());
-//        Assert.assertEquals(authorOne, resultNotificationsOne.getAuthorId());
-//        Assert.assertEquals(conversationOne, resultNotificationsOne.getConversationId());
-//        Assert.assertEquals(contentOne, resultNotificationsOne.getContent());
-//        Assert.assertEquals(mentionedOne, resultNotificationsOne.getMentionedId());
-//
-//        Notification resultNotificationsTwo = resultNotifications.get(1);
-//        Assert.assertEquals(idTwo, resultNotificationsTwo.getId());
-//        Assert.assertEquals(authorTwo, resultNotificationsTwo.getAuthorId());
-//        Assert.assertEquals(conversationTwo, resultNotificationsTwo.getConversationId());
-//        Assert.assertEquals(contentTwo, resultNotificationsTwo.getContent());
-//        Assert.assertEquals(mentionedTwo, resultNotificationsTwo.getMentionedId());
+        UUID idOne = UUID.fromString("10000000-2222-3333-4444-555555555555");
+        UUID authorOne = UUID.fromString("10000001-2222-3333-4444-555555555555");
+        UUID conversationOne = UUID.fromString("10000002-2222-3333-4444-555555555555");
+        String contentOne = "testuser mentioned you in testconversation: test @user1";
+        UUID mentionedOne = UUID.fromString("10000003-2222-3333-4444-555555555555");
+        Notification notificationOne =
+                new Notification(idOne, authorOne, conversationOne, contentOne, mentionedOne);
+
+        UUID idTwo = UUID.fromString("10000004-2222-3333-4444-555555555555");
+        UUID authorTwo = UUID.fromString("10000005-2222-3333-4444-555555555555");
+        UUID conversationTwo = UUID.fromString("10000006-2222-3333-4444-555555555555");
+        String contentTwo = "testuser mentioned you in testconversation: test @user2";
+        UUID mentionedTwo = UUID.fromString("10000007-2222-3333-4444-555555555555");
+        Notification notificationTwo =
+                new Notification(idTwo, authorTwo, conversationTwo, contentTwo, mentionedTwo);
+
+        // save
+        persistentDataStore.writeThrough(notificationOne);
+        persistentDataStore.writeThrough(notificationTwo);
+
+        // load
+        List<Notification> resultNotifications = persistentDataStore.loadNotifications();
+
+        // confirm that what we saved matches what we loaded
+        Notification resultNotificationsOne = resultNotifications.get(0);
+        Assert.assertEquals(idOne, resultNotificationsOne.getId());
+        Assert.assertEquals(authorOne, resultNotificationsOne.getAuthorId());
+        Assert.assertEquals(conversationOne, resultNotificationsOne.getConversationId());
+        Assert.assertEquals(contentOne, resultNotificationsOne.getContent());
+        Assert.assertEquals(mentionedOne, resultNotificationsOne.getMentionedId());
+
+        Notification resultNotificationsTwo = resultNotifications.get(1);
+        Assert.assertEquals(idTwo, resultNotificationsTwo.getId());
+        Assert.assertEquals(authorTwo, resultNotificationsTwo.getAuthorId());
+        Assert.assertEquals(conversationTwo, resultNotificationsTwo.getConversationId());
+        Assert.assertEquals(contentTwo, resultNotificationsTwo.getContent());
+        Assert.assertEquals(mentionedTwo, resultNotificationsTwo.getMentionedId());
     }
 }

@@ -29,7 +29,7 @@ String username = (String) request.getSession().getAttribute("user");
     <jsp:attribute name="bodyContent">
         <h1>Notifications</h1>
         <% for(Notification notification : notifications){ %>
-             <% if(notification.getMentionedId() == usr.getUser(username).getId()) {%>
+             <% if(username != null && notification.getMentionedId().equals(usr.getUser(username).getId())) {%>
                 <li><%= notification.getContent() %></li>
              <% } %>
         <% } %>
