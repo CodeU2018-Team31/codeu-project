@@ -88,23 +88,6 @@ public class NotificationStore {
         }
         return null;
     }
-    /** Find and return the Notifications with a given user ID. */
-    public boolean getUserofNotifications(UUID id) {
-        for (Notification notification : notifications) {
-            if (notification.getMentionedId().equals(id)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    public String getNotificationsofUser(UUID id) {
-        for (Notification notification : notifications) {
-            if (notification.getMentionedId().equals(id)) {
-                return notification.getContent();
-            }
-        }
-        return null;
-    }
 
     public List<Notification> loadNotifications(){
         return notifications;
