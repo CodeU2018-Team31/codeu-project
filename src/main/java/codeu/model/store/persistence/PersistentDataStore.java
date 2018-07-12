@@ -19,6 +19,7 @@ import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
+import codeu.model.data.Notification;
 import codeu.model.store.persistence.PersistentDataStoreException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -157,7 +158,40 @@ public class PersistentDataStore {
 
     return messages;
   }
+  /**
+   * Loads all Notification objects from the Datastore service and returns them in a List, sorted in
+   * ascending order by userID.
+   *
+   * @throws PersistentDataStoreException if an error was detected during the load from the
+   *     Datastore service
+   */
+  public List<Notification> loadNotifications() throws PersistentDataStoreException {
 
+    List<Notification> notifications = new ArrayList<>();
+
+    // Retrieve all messages from the datastore.
+    Query query = new Query("chat-notifications");
+    PreparedQuery results = datastore.prepare(query);
+
+    for (Entity entity : results.asIterable()) {
+      try {
+        UUID uuid = UUID.fromString((String) entity.getProperty("uuid"));
+        UUID authorUuid = UUID.fromString((String) entity.getProperty("author_uuid"));
+        UUID conversationUuid = UUID.fromString((String) entity.getProperty("convo_uuid"));
+        String content = (String) entity.getProperty("content");
+        UUID mentionedUuid = UUID.fromString((String) entity.getProperty("mentioned_uuid"));
+        Notification notification = new Notification(uuid,authorUuid, conversationUuid, content, mentionedUuid);
+        notifications.add(notification);
+      } catch (Exception e) {
+        // In a production environment, errors should be very rare. Errors which may
+        // occur include network errors, Datastore service errors, authorization errors,
+        // database entity definition mismatches, or service mismatches.
+        throw new PersistentDataStoreException(e);
+      }
+    }
+
+    return notifications;
+  }
   /**
    * Loads {@link Activity} objects from the Datastore service that were created before the provided datetime,
    * up to the provided limit of number of entries and sorted in descending order by creation time.
@@ -214,6 +248,17 @@ public class PersistentDataStore {
     messageEntity.setProperty("content", message.getContent());
     messageEntity.setProperty("creation_time", message.getCreationTime().toString());
     datastore.put(messageEntity);
+  }
+
+  /** Write a Notification object to the Datastore service. */
+  public void writeThrough(Notification notification) {
+    Entity notificationEntity = new Entity("chat-notifications", notification.getId().toString());
+    notificationEntity.setProperty("uuid", notification.getId().toString());
+    notificationEntity.setProperty("author_uuid", notification.getAuthorId().toString());
+    notificationEntity.setProperty("convo_uuid", notification.getConversationId().toString());
+    notificationEntity.setProperty("content", notification.getContent());
+    notificationEntity.setProperty("mentioned_uuid", notification.getMentionedId().toString());
+    datastore.put(notificationEntity);
   }
 
   /** Write a Conversation object to the Datastore service. */
