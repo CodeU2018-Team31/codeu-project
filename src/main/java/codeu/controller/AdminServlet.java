@@ -54,8 +54,7 @@ public class AdminServlet extends HttpServlet {
         String username = (String) request.getSession().getAttribute("user");
         User user = userStore.getUser(username);
 
-
-        if (!user.getAdmin()) {
+        if (user == null || !user.getAdmin()) {
             response.sendRedirect("/login");
         }else {
             request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
