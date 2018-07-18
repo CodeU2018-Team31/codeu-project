@@ -86,7 +86,7 @@ button {
   font-size: 18px;
 }
 
-a:visited, a:focus, a:hover, a:active {
+a, a:visited, a:focus, a:hover, a:active {
     color: #EEF1FE;
 }
 
