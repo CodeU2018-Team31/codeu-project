@@ -187,7 +187,7 @@ public class ChatServlet extends HttpServlet {
     UUID mentionedUser = notificationStore.getuserMentioned(message.getContent());
     //Add notification if a user is mentioned
       if(mentionedUser != null) {
-        String notificationinfo = String.format("%s mentioned you in %s: %s", username, conversationTitle, message.getContent());
+        String notificationinfo = String.format("%s mentioned you in <a href=\"/chat/%s\">%s</a>: %s", username, conversationTitle,conversationTitle, message.getContent());
         Notification notification =
                 new Notification(UUID.randomUUID(),
                                  user.getId(),
