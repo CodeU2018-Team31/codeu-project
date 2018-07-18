@@ -298,7 +298,7 @@ public class ChatServletTest {
     ArgumentCaptor<Notification> notificationArgumentCaptor = ArgumentCaptor.forClass(Notification.class);
     Mockito.verify(mockNotificationStore).addNotification(notificationArgumentCaptor.capture());
     Assert.assertEquals(
-            "test_username mentioned you in test_conversation: hey @test.",
+            "test_username mentioned you in <a href=\"/chat/test_conversation\">test_conversation</a>: hey @test.",
             notificationArgumentCaptor.getValue().getContent());
     Assert.assertEquals(tester.getId(),notificationArgumentCaptor.getValue().getMentionedId());
   }
