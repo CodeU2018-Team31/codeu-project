@@ -2,6 +2,7 @@ package codeu.service;
 
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
+import codeu.model.data.Notification;
 import codeu.model.data.User;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
@@ -18,14 +19,17 @@ public class ChatServiceTest {
     private ConversationStore conversationStore;
     private MessageStore messageStore;
     private ChatService chatService;
+    private NotificationService notificationService;
 
     @Before
     public void setup(){
         conversationStore = Mockito.mock(ConversationStore.class);
         messageStore = Mockito.mock(MessageStore.class);
+        notificationService = Mockito.mock(NotificationService.class);
         chatService = new ChatService();
         chatService.setConversationStore(conversationStore);
         chatService.setMessageStore(messageStore);
+        chatService.setNotificationService(notificationService);
     }
 
     @Test
@@ -47,6 +51,17 @@ public class ChatServiceTest {
         Assert.assertEquals(messageBody, messageArgumentCaptor.getValue().getContent());
         Assert.assertEquals(conversationId, messageArgumentCaptor.getValue().getConversationId());
         Assert.assertEquals(authorId, messageArgumentCaptor.getValue().getAuthorId());
+
+        ArgumentCaptor<Conversation> conversationArgumentCaptor = ArgumentCaptor.forClass(Conversation.class);
+        ArgumentCaptor<User> authorArgumentCaptore = ArgumentCaptor.forClass(User.class);
+        Mockito.verify(notificationService).generateMentionNotification(
+                messageArgumentCaptor.capture(),
+                conversationArgumentCaptor.capture(),
+                authorArgumentCaptore.capture()
+        );
+        Assert.assertEquals(messageBody, messageArgumentCaptor.getValue().getContent());
+        Assert.assertEquals(conversationId, conversationArgumentCaptor.getValue().getId());
+        Assert.assertEquals(authorId, authorArgumentCaptore.getValue().getId());
     }
 
     @Test(expected = IllegalArgumentException.class)

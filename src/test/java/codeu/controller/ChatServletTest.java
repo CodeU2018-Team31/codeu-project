@@ -35,6 +35,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import codeu.service.NotificationService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +53,7 @@ public class ChatServletTest {
   private ConversationStore mockConversationStore;
   private MessageStore mockMessageStore;
   private UserStore mockUserStore;
-  private NotificationStore mockNotificationStore;
+  private NotificationService mockNotificationService;
     private ActivityStore mockActivityStore;
 
   @Before
@@ -76,11 +78,11 @@ public class ChatServletTest {
     mockUserStore = Mockito.mock(UserStore.class);
     chatServlet.setUserStore(mockUserStore);
 
-    mockNotificationStore = Mockito.mock(NotificationStore.class);
-    chatServlet.setNotificationStore(mockNotificationStore);
+    mockNotificationService = Mockito.mock(NotificationService.class);
+    chatServlet.setNotificationService(mockNotificationService);
 
-      mockActivityStore = Mockito.mock(ActivityStore.class);
-      chatServlet.setActivityStore(mockActivityStore);
+    mockActivityStore = Mockito.mock(ActivityStore.class);
+    chatServlet.setActivityStore(mockActivityStore);
   }
 
   @Test
@@ -277,13 +279,7 @@ public class ChatServletTest {
                     "$2a$10$bBiLUAVmUFK6Iwg5rmpBUOIBW6rIMhU1eKfi3KR60V9UXaYTwPfHy",
                     Instant.now(),
                     false);
-    User tester =
-            new User(
-                    UUID.randomUUID(),
-                    "test",
-                    "$2a$10$bBiLUAVmUFK6Iwg5rmpBUOIBW6rIMhU1eKfi3KR60V9UXaYTwPfHy",
-                    Instant.now(),
-                    false);
+
     Mockito.when(mockUserStore.getUser("test_username")).thenReturn(fakeUser);
 
     Conversation fakeConversation =
@@ -292,14 +288,20 @@ public class ChatServletTest {
             .thenReturn(fakeConversation);
 
     Mockito.when(mockRequest.getParameter("message")).thenReturn("hey @test.");
-    Mockito.when(mockNotificationStore.getuserMentioned(mockRequest.getParameter("message"))).thenReturn(tester.getId());
     chatServlet.doPost(mockRequest, mockResponse);
 
-    ArgumentCaptor<Notification> notificationArgumentCaptor = ArgumentCaptor.forClass(Notification.class);
-    Mockito.verify(mockNotificationStore).addNotification(notificationArgumentCaptor.capture());
+    ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
+    ArgumentCaptor<Conversation> conversationArgumentCaptor = ArgumentCaptor.forClass(Conversation.class);
+    ArgumentCaptor<User> authorArgumentCaptore = ArgumentCaptor.forClass(User.class);
+    Mockito.verify(mockNotificationService).generateMentionNotification(
+            messageArgumentCaptor.capture(),
+            conversationArgumentCaptor.capture(),
+            authorArgumentCaptore.capture()
+    );
     Assert.assertEquals(
-            "test_username mentioned you in <a href=\"/chat/test_conversation\">test_conversation</a>: hey @test.",
-            notificationArgumentCaptor.getValue().getContent());
-    Assert.assertEquals(tester.getId(),notificationArgumentCaptor.getValue().getMentionedId());
+            "hey @test.",
+            messageArgumentCaptor.getValue().getContent());
+    Assert.assertEquals(fakeConversation.getId(), conversationArgumentCaptor.getValue().getId());
+    Assert.assertEquals(fakeUser.getId(), authorArgumentCaptore.getValue().getId());
   }
 }

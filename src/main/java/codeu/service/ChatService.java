@@ -13,9 +13,10 @@ public class ChatService {
 
     private ConversationStore conversationStore;
     private MessageStore messageStore;
+    private NotificationService notificationService;
 
     /**
-     * Sets the ConversationStore used by this servlet. This function provides a common setup method
+     * Sets the ConversationStore used by this service. This function provides a common setup method
      * for use by the test framework or the service's constructor
      */
     void setConversationStore(ConversationStore conversationStore) {
@@ -23,16 +24,25 @@ public class ChatService {
     }
 
     /**
-     * Sets the MessageStore used by this servlet. This function provides a common setup method for
-     * use by the test framework or the servlet's init() function.
+     * Sets the MessageStore used by this service. This function provides a common setup method for
+     * use by the test framework or the service's constructor.
      */
     void setMessageStore(MessageStore messageStore) {
         this.messageStore = messageStore;
     }
 
+    /**
+     * Sets the {@link NotificationService} used by this service. This function provides a common setup method for
+     * use by the test framework or the service's constructor.
+     */
+    void setNotificationService(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
     public ChatService(){
         setConversationStore(ConversationStore.getInstance());
         setMessageStore(MessageStore.getInstance());
+        setNotificationService(new NotificationService());
     }
 
     /**
@@ -54,5 +64,6 @@ public class ChatService {
 
         Message message = new Message(UUID.randomUUID(), conversation.getId(), author.getId(), messageBody, Instant.now());
         messageStore.addMessage(message);
+        notificationService.generateMentionNotification(message, conversation, author);
     }
 }

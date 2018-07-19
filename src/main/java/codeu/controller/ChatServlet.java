@@ -33,6 +33,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import codeu.service.NotificationService;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
@@ -48,8 +50,7 @@ public class ChatServlet extends HttpServlet {
   /** Store class that gives access to Users. */
   private UserStore userStore;
 
-  /** Store class that gives access to Notifications. */
-  private NotificationStore notificationStore;
+  private NotificationService notificationService;
 
     /**
      * Store class that gives access to Activities.
@@ -63,8 +64,8 @@ public class ChatServlet extends HttpServlet {
     setConversationStore(ConversationStore.getInstance());
     setMessageStore(MessageStore.getInstance());
     setUserStore(UserStore.getInstance());
-    setNotificationStore(NotificationStore.getInstance());
-      setActivityStore(ActivityStore.getInstance());
+    setNotificationService(new NotificationService());
+    setActivityStore(ActivityStore.getInstance());
   }
 
   /**
@@ -84,11 +85,11 @@ public class ChatServlet extends HttpServlet {
   }
 
   /**
-   * Sets the NotificationStore used by this servlet. This function provides a common setup method for
+   * Sets the {@link NotificationService} used by this servlet. This function provides a common setup method for
    * use by the test framework or the servlet's init() function.
    */
-  void setNotificationStore(NotificationStore notificationStore) {
-    this.notificationStore = notificationStore;
+  void setNotificationService(NotificationService notificationService) {
+    this.notificationService = notificationService;
   }
 
   /**
@@ -184,23 +185,12 @@ public class ChatServlet extends HttpServlet {
             Instant.now());
 
     messageStore.addMessage(message);
-    UUID mentionedUser = notificationStore.getuserMentioned(message.getContent());
-    //Add notification if a user is mentioned
-      if(mentionedUser != null) {
-        String notificationinfo = String.format("%s mentioned you in <a href=\"/chat/%s\">%s</a>: %s", username, conversationTitle,conversationTitle, message.getContent());
-        Notification notification =
-                new Notification(UUID.randomUUID(),
-                                 user.getId(),
-                                 conversation.getId(),
-                                 notificationinfo,
-                                 mentionedUser);
-        notificationStore.addNotification(notification);
-      }
+    notificationService.generateMentionNotification(message, conversation, user);
 
-      //Log Activity for message creation
-      String activityDescription = String.format("%s sent a message to %s: %s", username, conversationTitle, messageContent);
-      Activity activity = new Activity(UUID.randomUUID(), activityDescription, Instant.now(), ActivityTypeEnum.MESSAGE_ADDED);
-      activityStore.addActivity(activity);
+    //Log Activity for message creation
+    String activityDescription = String.format("%s sent a message to %s: %s", username, conversationTitle, messageContent);
+    Activity activity = new Activity(UUID.randomUUID(), activityDescription, Instant.now(), ActivityTypeEnum.MESSAGE_ADDED);
+    activityStore.addActivity(activity);
 
     // redirect to a GET request
     response.sendRedirect("/chat/" + conversationTitle);

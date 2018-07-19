@@ -32,8 +32,7 @@ public class BotService {
     }
 
     /**
-     * This additional constructor providers a uniform way to initialize
-     * the web client and JSON parser regularly or to mock them
+     * This additional constructor providers a uniform way to initialize the dependencies of this service
      *
      * @param webClient The client to be used for making HTTP requests by the service
      * @param parser The JSON parser to be used for parsing HTTP responses
