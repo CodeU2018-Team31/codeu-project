@@ -17,6 +17,9 @@ package codeu.model.data;
 import codeu.enumeration.ActivityTypeEnum;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.UUID;
 
 /**
@@ -56,5 +59,10 @@ public class Activity {
 
     public ActivityTypeEnum getType() {
         return type;
+    }
+
+    public String getFormattedDatetime(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withZone(ZoneId.of("UTC"));
+        return formatter.format(datetime);
     }
 }
