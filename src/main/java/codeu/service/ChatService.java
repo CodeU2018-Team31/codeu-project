@@ -1,8 +1,11 @@
 package codeu.service;
 
+import codeu.enumeration.ActivityTypeEnum;
+import codeu.model.data.Activity;
 import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
+import codeu.model.store.basic.ActivityStore;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 
@@ -14,6 +17,7 @@ public class ChatService {
     private ConversationStore conversationStore;
     private MessageStore messageStore;
     private NotificationService notificationService;
+    private ActivityStore activityStore;
 
     /**
      * Sets the ConversationStore used by this service. This function provides a common setup method
@@ -39,10 +43,19 @@ public class ChatService {
         this.notificationService = notificationService;
     }
 
+    /**
+     * Sets the {@link ActivityStore} used by this service. This function provides a common setup method for
+     * use by the test framework or the service's constructor.
+     */
+    void setActivityStore(ActivityStore activityStore) {
+        this.activityStore = activityStore;
+    }
+
     public ChatService(){
         setConversationStore(ConversationStore.getInstance());
         setMessageStore(MessageStore.getInstance());
         setNotificationService(new NotificationService());
+        setActivityStore(ActivityStore.getInstance());
     }
 
     /**
@@ -65,5 +78,10 @@ public class ChatService {
         Message message = new Message(UUID.randomUUID(), conversation.getId(), author.getId(), messageBody, Instant.now());
         messageStore.addMessage(message);
         notificationService.generateMentionNotification(message, conversation, author);
+
+        //Log Activity for message creation
+        String activityDescription = String.format("%s sent a message to %s: %s", author.getName(), conversationName, messageBody);
+        Activity activity = new Activity(UUID.randomUUID(), activityDescription, Instant.now(), ActivityTypeEnum.MESSAGE_ADDED);
+        activityStore.addActivity(activity);
     }
 }
