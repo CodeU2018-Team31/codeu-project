@@ -27,7 +27,7 @@ public class ActivityTest {
     public void testCreate() {
         UUID id = UUID.randomUUID();
         String description = "User1 has just added a message to the Conversation `Hello World!`";
-        Instant creation = Instant.now();
+        Instant creation = Instant.ofEpochMilli(0);
         ActivityTypeEnum type = ActivityTypeEnum.MESSAGE_ADDED;
 
         Activity activity = new Activity(id, description, creation, type);
@@ -36,5 +36,6 @@ public class ActivityTest {
         Assert.assertEquals(description, activity.getDescription());
         Assert.assertEquals(creation, activity.getDatetime());
         Assert.assertEquals(type, activity.getType());
+        Assert.assertEquals("Jan 1, 1970, 12:00:00 AM", activity.getFormattedDatetime());
     }
 }

@@ -1,0 +1,5 @@
+.activities li{
+    list-style: none;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    padding: 14px 0;
+}

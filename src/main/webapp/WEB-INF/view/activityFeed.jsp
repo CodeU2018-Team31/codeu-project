@@ -21,14 +21,17 @@ List<Activity> activities = (List<Activity>) request.getAttribute("activities");
 String error = (String) request.getAttribute("error");
 %>
 <t:base>
+    <jsp:attribute name="headContent">
+        <link rel="stylesheet" href="/css/activityFeed.css">
+    </jsp:attribute>
     <jsp:attribute name="bodyContent">
         <h1>Activity Feed</h1>
         <% if(error != null) { %>
             <p><%= request.getAttribute("error") %></p>
         <% } else { %>
-            <ul>
+            <ul class="activities">
                 <% for(Activity activity: activities){ %>
-                    <li><%= activity.getDescription() %></li>
+                    <li><b><%= activity.getFormattedDatetime() %> UTC :</b> <%= activity.getDescription() %></li>
                 <% } %>
             </ul>
         <% } %>
