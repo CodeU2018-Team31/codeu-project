@@ -24,39 +24,68 @@ public class User {
   private final String passwordHash;
   private final Instant creation;
   private final Boolean isAdmin;
+  private final String bio;
+  private final String instagramHandle;
+  private final String snapchatHandle;
 
   /**
    * Constructs a new User.
    *
-   * @param id the ID of this User
-   * @param name the username of this User
-   * @param passwordHash the password hash of this User
-   * @param creation the creation time of this User
+   * @param id              the ID of this User
+   * @param name            the username of this User
+   * @param passwordHash    the password hash of this User
+   * @param creation        the creation time of this User
    */
   public User(UUID id, String name, String passwordHash, Instant creation, Boolean isAdmin) {
-    this.id = id;
-    this.name = name;
-    this.passwordHash = passwordHash;
-    this.creation = creation;
-    this.isAdmin = isAdmin;
+    this(id, name, passwordHash, creation, isAdmin, null, null, null);
   }
 
-  /** Returns the ID of this User. */
+    /**
+     * Constructs a new User.
+     *
+     * @param id              the ID of this User
+     * @param name            the username of this User
+     * @param passwordHash    the password hash of this User
+     * @param creation        the creation time of this User
+     * @param bio             the bio of the user
+     * @param instagramHandle the instagram username of the user
+     * @param snapchatHandle  the snapchat username of the user
+     */
+    public User(UUID id, String name, String passwordHash, Instant creation, Boolean isAdmin, String bio, String instagramHandle, String snapchatHandle) {
+        this.id = id;
+        this.name = name;
+        this.passwordHash = passwordHash;
+        this.creation = creation;
+        this.isAdmin = isAdmin;
+        this.bio = bio;
+        this.instagramHandle = instagramHandle;
+        this.snapchatHandle = snapchatHandle;
+    }
+
+  /**
+   * Returns the ID of this User.
+   */
   public UUID getId() {
     return id;
   }
 
-  /** Returns the username of this User. */
+  /**
+   * Returns the username of this User.
+   */
   public String getName() {
     return name;
   }
-  
-  /** Returns the password hash of this User. */
+
+  /**
+   * Returns the password hash of this User.
+   */
   public String getPasswordHash() {
     return passwordHash;
   }
 
-  /** Returns the creation time of this User. */
+  /**
+   * Returns the creation time of this User.
+   */
   public Instant getCreationTime() {
     return creation;
   }
@@ -64,4 +93,17 @@ public class User {
   public Boolean getAdmin() {
     return isAdmin;
   }
+
+  public String getBio() {
+    return bio;
+  }
+
+  public String getInstagram() {
+    return instagramHandle;
+  }
+
+  public String getSnapchat() {
+    return snapchatHandle;
+  }
 }
+
