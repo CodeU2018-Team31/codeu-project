@@ -116,6 +116,14 @@ public class UserStore {
    * Update an existing User.
    */
   public void updateUser(User user) {
+    //Find and update the user in the cache array
+    for(int i = 0; i < users.size(); i++){
+      if(users.get(i).getName().equals(user.getName())){
+        users.set(i, user);
+        break;
+      }
+    }
+
     persistentStorageAgent.writeThrough(user);
   }
 
