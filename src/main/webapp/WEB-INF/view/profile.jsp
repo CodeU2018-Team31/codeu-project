@@ -16,15 +16,22 @@
 --%>
 <t:base>
     <jsp:attribute name="title">Profile</jsp:attribute>
+    <jsp:attribute name="headContent">
+        <link rel="stylesheet" href="/css/profile.css">
+    </jsp:attribute>
     <jsp:attribute name="bodyContent">
     <% if(request.getSession().getAttribute("user") != null){ %>
-          <h1>Hello <%= request.getSession().getAttribute("user") %>!</h1>
-        <% } else{ %>
-          <h1> Hello </h1>
-        <% } %>
-        <h2> Welcome to your profile </h2>
-
-        <button> Upload </button>
-
+        <h1>Hello <%= request.getSession().getAttribute("user") %>!</h1>
+        <h2 style="margin-bottom: 0;"> Welcome to your profile </h2>
+        <h3 style="margin-top: 0;">Let people know more about you! </h3>
+        <form action="/profile" method="POST">
+            <textarea name="bio" placeholder="Your Bio" id="bio"><%= request.getAttribute("bio") %></textarea>
+            <div>
+              <input type="submit" value="Update" style="margin-top: 4px;">
+            </div>
+        </form>
+    <% } else{ %>
+        <h1> Hello </h1>
+    <% } %>
     </jsp:attribute>
 </t:base>
