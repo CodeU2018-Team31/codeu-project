@@ -14,6 +14,8 @@
 
 package codeu.controller;
 
+import codeu.model.data.User;
+import codeu.model.store.basic.UserStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -22,6 +24,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class ProfileServletTest {
@@ -30,6 +33,8 @@ public class ProfileServletTest {
     private HttpServletRequest mockRequest;
     private HttpServletResponse mockResponse;
     private RequestDispatcher mockRequestDispatcher;
+    private HttpSession mockSession;
+    private UserStore mockUserStore;
 
     @Before
     public void setup() {
@@ -37,16 +42,49 @@ public class ProfileServletTest {
 
         mockRequest = Mockito.mock(HttpServletRequest.class);
         mockResponse = Mockito.mock(HttpServletResponse.class);
+        mockSession = Mockito.mock(HttpSession.class);
+        mockUserStore = Mockito.mock(UserStore.class);
 
         mockRequestDispatcher = Mockito.mock(RequestDispatcher.class);
         Mockito.when(mockRequest.getRequestDispatcher("/WEB-INF/view/profile.jsp"))
                 .thenReturn(mockRequestDispatcher);
+        Mockito.when(mockRequest.getSession()).thenReturn(mockSession);
+        ProfileServlet.setUserStore(mockUserStore);
     }
 
     @Test
     public void testDoGet() throws IOException, ServletException {
+        User user = Mockito.mock(User.class);
+
+        Mockito.when(mockSession.getAttribute("user")).thenReturn("test_user");
+        Mockito.when(mockUserStore.getUser("test_user")).thenReturn(user);
+        Mockito.when(user.getBio()).thenReturn("test bio");
+
         ProfileServlet.doGet(mockRequest, mockResponse);
-        //verify request dispatcher's forward method is called with the mockRequest and mockResponse
+        Mockito.verify(mockRequest).setAttribute("bio", "test bio");
         Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
+    }
+
+    @Test
+    public void testDoGet_withNoLoggedInUser_AndExpectRedirect() throws IOException, ServletException {
+        Mockito.when(mockSession.getAttribute("user")).thenReturn(null);
+        Mockito.when(mockUserStore.getUser("test_user")).thenReturn(null);
+
+        ProfileServlet.doGet(mockRequest, mockResponse);
+        Mockito.verify(mockResponse).sendRedirect("/login");
+    }
+
+    @Test
+    public void testDoPost() throws IOException, ServletException {
+        User user = Mockito.mock(User.class);
+
+        Mockito.when(mockSession.getAttribute("user")).thenReturn("test_user");
+        Mockito.when(mockUserStore.getUser("test_user")).thenReturn(user);
+        Mockito.when(mockRequest.getParameter("bio")).thenReturn("test bio");
+        ProfileServlet.doPost(mockRequest, mockResponse);
+
+        Mockito.verify(user).setBio("test bio");
+        Mockito.verify(mockUserStore).updateUser(user);
+        Mockito.verify(mockResponse).sendRedirect("/profile");
     }
 }
