@@ -26,8 +26,16 @@
             <b>EastBot: </b>
             Try chatting with our friend and smart conversational chatbot, EastBot! He is a bit shy, but try having some smalltalk with him,
             and he will hopefully give you a sensible response back! You can also ask EastBot to send messages to conversations on your behalf;
-            try for example something along the lines of "Can you send, This is a Test Message, to PHPers?", and see what happens! Whenever, you
-            want to chat, EastBot is always there as a private conversation, that no one else can tap into
+            try for example something along the lines of "Can you send, This is a Test Message, to PHPers?", and see what happens!
+            Here are also a few highlights of things you can ask EastBot (but feel free to try more!):
+            <ul>
+                <li>How are you?</li>
+                <li>What's your birth date?</li>
+                <li>You're boring</li>
+                <li>You're a chatbot</li>
+                <li>Are you there</li>
+            </ul>
+            Whenever, you want to chat, EastBot is always there as a private conversation, that no one else can tap into.
         </li>
         <li>
             <b>Mentions and Notifications: </b>
