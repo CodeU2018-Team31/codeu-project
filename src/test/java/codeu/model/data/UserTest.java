@@ -36,5 +36,19 @@ public class UserTest {
     Assert.assertEquals(passwordHash, user.getPasswordHash());
     Assert.assertEquals(creation, user.getCreationTime());
     Assert.assertEquals(isAdmin, user.getAdmin());
+    Assert.assertEquals("", user.getBio());
+  }
+
+  @Test
+  public void testGetSetBio() {
+    UUID id = UUID.randomUUID();
+    String name = "test_username";
+    String passwordHash = "$2a$10$bBiLUAVmUFK6Iwg5rmpBUOIBW6rIMhU1eKfi3KR60V9UXaYTwPfHy";
+    Instant creation = Instant.now();
+    Boolean isAdmin = false;
+
+    User user = new User(id, name, passwordHash, creation, isAdmin);
+    user.setBio("test bio");
+    Assert.assertEquals("test bio", user.getBio());
   }
 }
