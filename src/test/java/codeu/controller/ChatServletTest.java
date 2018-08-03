@@ -290,18 +290,18 @@ public class ChatServletTest {
     Mockito.when(mockRequest.getParameter("message")).thenReturn("hey @test.");
     chatServlet.doPost(mockRequest, mockResponse);
 
-    ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
     ArgumentCaptor<Conversation> conversationArgumentCaptor = ArgumentCaptor.forClass(Conversation.class);
     ArgumentCaptor<User> authorArgumentCaptore = ArgumentCaptor.forClass(User.class);
     Mockito.verify(mockNotificationService).generateMentionNotification(
-            messageArgumentCaptor.capture(),
+            Mockito.eq("hey @test."),
             conversationArgumentCaptor.capture(),
             authorArgumentCaptore.capture()
     );
-    Assert.assertEquals(
-            "hey @test.",
-            messageArgumentCaptor.getValue().getContent());
     Assert.assertEquals(fakeConversation.getId(), conversationArgumentCaptor.getValue().getId());
     Assert.assertEquals(fakeUser.getId(), authorArgumentCaptore.getValue().getId());
+
+    ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
+    Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
+    Assert.assertEquals("hey <font class='mention'>@test.</font>", messageArgumentCaptor.getValue().getContent());
   }
 }

@@ -26,15 +26,15 @@ public class NotificationService {
     }
 
     /**
-     * Parses a given message for @mention tags, and finds the corresponding user for them, if
+     * Parses a given message content for @mention tags, and finds the corresponding user for them, if
      * applicable. If found, generates a mention notification for the mentioned user.
      *
-     * @param message The message that possibly contains an @mention
+     * @param messageContent The message text that possibly contains an @mention
      * @param conversation The conversation the message belongs to
      * @param author The author of the message
      */
-    public void generateMentionNotification(Message message, Conversation conversation, User author){
-        UUID mentionedUser = notificationStore.getuserMentioned(message.getContent());
+    public void generateMentionNotification(String messageContent, Conversation conversation, User author){
+        UUID mentionedUser = notificationStore.getuserMentioned(messageContent);
         //Add notification if a user is mentioned
         if(mentionedUser != null) {
 
@@ -43,7 +43,7 @@ public class NotificationService {
                     author.getName(),
                     conversation.getTitle(),
                     conversation.getTitle(),
-                    message.getContent()
+                    messageContent
             );
 
             Notification notification = new Notification(

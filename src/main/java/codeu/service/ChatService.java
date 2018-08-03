@@ -75,9 +75,10 @@ public class ChatService {
             throw new IllegalArgumentException(errorMessage);
         }
 
-        Message message = new Message(UUID.randomUUID(), conversation.getId(), author.getId(), messageBody, Instant.now());
+        String formattedMessageContent = messageBody.replaceAll("(@[^\\s]+)","<font class='mention'>$1</font>");
+        Message message = new Message(UUID.randomUUID(), conversation.getId(), author.getId(), formattedMessageContent, Instant.now());
         messageStore.addMessage(message);
-        notificationService.generateMentionNotification(message, conversation, author);
+        notificationService.generateMentionNotification(messageBody, conversation, author);
 
         //Log Activity for message creation
         String activityDescription = String.format("%s sent a message to %s: %s", author.getName(), conversationName, messageBody);

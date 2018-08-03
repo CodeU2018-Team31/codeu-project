@@ -37,7 +37,7 @@ public class ChatServiceTest {
     @Test
     public void testSendMessageToConversation() throws IllegalArgumentException {
         String conversationName = "test_conversation";
-        String messageBody = "test message";
+        String messageBody = "test @message";
         Conversation conversation = Mockito.mock(Conversation.class);
         UUID conversationId = UUID.randomUUID();
         User author = Mockito.mock(User.class);
@@ -51,7 +51,7 @@ public class ChatServiceTest {
         chatService.sendMessageToConversation(author, messageBody, conversationName);
         ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
         Mockito.verify(messageStore).addMessage(messageArgumentCaptor.capture());
-        Assert.assertEquals(messageBody, messageArgumentCaptor.getValue().getContent());
+        Assert.assertEquals("test <font class='mention'>@message</font>", messageArgumentCaptor.getValue().getContent());
         Assert.assertEquals(conversationId, messageArgumentCaptor.getValue().getConversationId());
         Assert.assertEquals(authorId, messageArgumentCaptor.getValue().getAuthorId());
 
@@ -60,16 +60,15 @@ public class ChatServiceTest {
         ArgumentCaptor<Activity> activityArgumentCaptor = ArgumentCaptor.forClass(Activity.class);
 
         Mockito.verify(notificationService).generateMentionNotification(
-                messageArgumentCaptor.capture(),
+                Mockito.eq(messageBody),
                 conversationArgumentCaptor.capture(),
                 authorArgumentCaptore.capture()
         );
-        Assert.assertEquals(messageBody, messageArgumentCaptor.getValue().getContent());
         Assert.assertEquals(conversationId, conversationArgumentCaptor.getValue().getId());
         Assert.assertEquals(authorId, authorArgumentCaptore.getValue().getId());
 
         Mockito.verify(activityStore).addActivity(activityArgumentCaptor.capture());
-        String expectedActivityBody = "test_user sent a message to test_conversation: test message";
+        String expectedActivityBody = "test_user sent a message to test_conversation: test @message";
         Assert.assertEquals(ActivityTypeEnum.MESSAGE_ADDED, activityArgumentCaptor.getValue().getType());
         Assert.assertEquals(expectedActivityBody, activityArgumentCaptor.getValue().getDescription());
     }

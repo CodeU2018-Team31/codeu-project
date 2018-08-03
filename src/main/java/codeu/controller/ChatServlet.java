@@ -175,7 +175,7 @@ public class ChatServlet extends HttpServlet {
 
     // this removes any HTML from the message content
     String cleanedMessageContent = Jsoup.clean(messageContent, Whitelist.none());
-    UUID mentionedUser = notificationStore.getuserMentioned(cleanedMessageContent);
+    notificationService.generateMentionNotification(cleanedMessageContent, conversation, user);
     String formattedMessageContent = cleanedMessageContent.replaceAll("(@[^\\s]+)","<font class='mention'>$1</font>");
     Message message =
         new Message(
@@ -186,7 +186,6 @@ public class ChatServlet extends HttpServlet {
             Instant.now());
 
     messageStore.addMessage(message);
-    notificationService.generateMentionNotification(message, conversation, user);
 
     //Log Activity for message creation
     String activityDescription = String.format("%s sent a message to %s: %s", username, conversationTitle, messageContent);
