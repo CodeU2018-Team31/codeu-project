@@ -31,3 +31,8 @@
     border-bottom-right-radius: 5px;
     position: relative;
 }
+
+.mention {
+    color: #0F8C7B;
+    font-weight: bold;
+}

@@ -50,7 +50,7 @@ public class NotificationServiceTest {
                 new Message(UUID.randomUUID(), fakeConversation.getId(), fakeUser.getId(), "hey @test.", Instant.now());
 
         Mockito.when(mockNotificationStore.getuserMentioned(fakeMessage.getContent())).thenReturn(tester.getId());
-        notificationService.generateMentionNotification(fakeMessage, fakeConversation, fakeUser);
+        notificationService.generateMentionNotification(fakeMessage.getContent(), fakeConversation, fakeUser);
 
         ArgumentCaptor<Notification> notificationArgumentCaptor = ArgumentCaptor.forClass(Notification.class);
         Mockito.verify(mockNotificationStore).addNotification(notificationArgumentCaptor.capture());
